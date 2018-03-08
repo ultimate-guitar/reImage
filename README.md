@@ -1,14 +1,17 @@
 # reImage
 
-## Instal steps
-1. Build and run docker image
+## Features
+1. Using libvips for fast image resizing
+2. Docker container uses libvips compiled with mozjpeg instead of libjpeg-turbo. Mozjpeg 
+
+## Install steps
+1. Deploy it with Docker
 2. Configure frontend
 3. Enjoy!
 
-## Build docker image
-1. Clone this repo to PC with `git clone https://github.com/larrabee/reImage.git`
-2. Build docker container: `cd reImage && docker build -t reimage .`
-3. Run it with `docker run -d -p 7075:7075 reImage` or use docker-compose config:
+## Deploy
+1. Pull docker container:  `docker pull larrabee/reimage`
+2. Run it with `docker run -d -p 7075:7075 reimage` or use docker-compose config:
 ```
 version: '2'
 services:
@@ -51,10 +54,12 @@ http {
     }
 }
 ```
-You must set:
+Required options:
 1. Replace `localhost:7075` with your hostname and port if you ran resizer in different node.
 2. Set `X-RESIZE-SCHEME "http"` if your image server with original images run over http (by default use https). 
 3. Set you image server hostname here: `X-RESIZE-BASE "example.com"`
+
+Optional:
 4. Set `X-RESIZE-QUALITY` header if you want to override quality settings (default 80), alowed value: 1-100
 5. Set `X-RESIZE-COMPRESSION` header if you want to override quality settings (default 5), allowed value: 0-9  
 

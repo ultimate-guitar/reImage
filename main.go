@@ -5,12 +5,13 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/reuseport"
 	"log"
+	"time"
+	"image/png"
 
 	//Profiling
 	"net/http"
 	_ "net/http/pprof"
 	"runtime"
-	"time"
 )
 
 var (
@@ -24,13 +25,15 @@ const (
 	resizeHeaderNameSchema         = "x-resize-scheme"
 	resizeHeaderDefaultSchema      = "https"
 	resizeHeaderNameQuality        = "x-resize-quality"
-	resizeHeaderDefaultQuality     = 90
+	resizeHeaderDefaultQuality     = 80
 	resizeHeaderNameCopression     = "x-resize-compression"
 	resizeHeaderDefaultCompression = 6
 	maxConcurrencyRequests         = 2048
 	imageDownloadTimeout           = 20 * time.Second
 	requestReadTimeout             = 10 * time.Second
 	responseWriteTimeout           = 20 * time.Second
+	resizePngSpeed                 = 1
+	resizePngCompression           = png.BestCompression
 )
 
 func main() {

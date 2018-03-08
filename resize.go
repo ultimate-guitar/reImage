@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	imagequant "github.com/larrabee/go-imagequant"
 	"github.com/valyala/fasthttp"
 	"gopkg.in/h2non/bimg.v1"
 	"io/ioutil"
@@ -133,7 +134,6 @@ func getSourceImage(params *requestParams) (code int, err error) {
 	return res.StatusCode, nil
 }
 
-//
 func resizeImage(params *requestParams) (err error) {
 	options := bimg.Options{
 		Width:         params.reWidth,
@@ -144,13 +144,27 @@ func resizeImage(params *requestParams) (err error) {
 		StripMetadata: true,
 		NoProfile:     true,
 		Embed:         true,
-		Trim: true,
+		Trim:          true,
 	}
 
-	fmt.Println(params.reQuality)
-	params.imageResizedBody, err = bimg.NewImage(params.imageOriginBody).Process(options)
+	image := bimg.NewImage(params.imageOriginBody)
+	params.imageResizedBody, err = image.Process(options)
 	if err != nil {
 		return err
 	}
+	if image.Type() == "png" {
+		if err:= optimizePng(params); err != nil {
+			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)
+		}
+	}
+	return nil
+}
+
+func optimizePng(params *requestParams) (err error) {
+	image, err := imagequant.Crush(params.imageResizedBody, resizePngSpeed, resizePngCompression)
+	if err != nil {
+		return err
+	}
+	params.imageResizedBody = image
 	return nil
 }

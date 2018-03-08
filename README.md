@@ -2,7 +2,7 @@
 
 ## Features
 1. Using libvips for fast image resizing
-2. Docker container uses libvips compiled with mozjpeg instead of libjpeg-turbo. Mozjpeg 
+2. Docker container uses libvips compiled with mozjpeg instead of libjpeg-turbo. MozJPEG makes tradeoffs that are intended to benefit Web use cases and focuses solely on improving encoding, so it's best used as part of a Web encoding workflow. 
 
 ## Install steps
 1. Deploy it with Docker

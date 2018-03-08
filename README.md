@@ -1,8 +1,11 @@
 # reImage
 
 ## Features
-1. Using libvips for fast image resizing
-2. Docker container uses libvips compiled with mozjpeg instead of libjpeg-turbo. MozJPEG makes tradeoffs that are intended to benefit Web use cases and focuses solely on improving encoding, so it's best used as part of a Web encoding workflow. 
+1. No os.exec call of pngquant or mozjpeg. Only bindings to libraries.
+2. Using libvips for fast image resizing
+3. Docker container uses libvips compiled with mozjpeg instead of libjpeg-turbo. MozJPEG makes tradeoffs that are intended to benefit Web use cases and focuses solely on improving encoding, so it's best used as part of a Web encoding workflow. 
+4. png images are optimized with libimagequant (backend library of pngquant)
+
 
 ## Install steps
 1. Deploy it with Docker

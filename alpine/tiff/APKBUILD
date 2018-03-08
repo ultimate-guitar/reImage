@@ -1,0 +1,73 @@
+# Contributor: Sergei Lukin <sergej.lukin@gmail.com>
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Michael Mason <ms13sp@gmail.com>
+pkgname=tiff
+pkgver=4.0.9
+pkgrel=1
+pkgdesc="Provides support for the Tag Image File Format or TIFF"
+url="http://www.libtiff.org/"
+arch="all"
+license="GPL"
+depends=
+depends_dev="zlib-dev mozjpeg-dev"
+makedepends="libtool autoconf automake $depends_dev"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-tools"
+builddir="$srcdir/$pkgname-$pkgver"
+source="http://download.osgeo.org/libtiff/$pkgname-$pkgver.tar.gz
+	CVE-2017-18013.patch
+	"
+# secfixes:
+#   4.0.9-r1:
+#     - CVE-2017-18013
+#   4.0.9-r0:
+#     - CVE-2017-16231
+#     - CVE-2017-16232
+#   4.0.8-r1:
+#     - CVE-2017-9936
+#     - CVE-2017-10688
+#   4.0.7-r2:
+#     - CVE-2017-7592
+#     - CVE-2017-7593
+#     - CVE-2017-7594
+#     - CVE-2017-7595
+#     - CVE-2017-7596
+#     - CVE-2017-7598
+#     - CVE-2017-7601
+#     - CVE-2017-7602
+#   4.0.7-r1:
+#     - CVE-2017-5225
+
+prepare() {
+	cd "$builddir"
+	update_config_sub
+	default_prepare
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--disable-cxx
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+tools() {
+	pkgdesc="Command-line utility programs for manipulating TIFF files"
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}

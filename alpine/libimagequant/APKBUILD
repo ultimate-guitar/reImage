@@ -1,0 +1,36 @@
+# Contributor: larrabee <kafatron@gmail.com>
+# Maintainer: larrabee <kafatron@gmail.com>
+pkgname=libimagequant
+pkgver=2.11.10
+pkgrel=0
+pkgdesc="Small, portable C library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images"
+url="https://github.com/larrabee/libimagequant"
+arch="all"
+license="GPLv3"
+depends=""
+makedepends="make gcc"
+source="https://github.com/larrabee/libimagequant/archive/$pkgver.tar.gz"
+
+builddir="$srcdir/$pkgname-$pkgver"
+prefix="/usr"
+libdir="$prefix/lib"
+pkgconfigdir="$libdir/pkgconfig"
+includedir="$prefix/include"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--enable-sse \
+		--prefix=$prefix
+		CFLAGS="-O2 -fopenmp -funroll-loops -fomit-frame-pointer -Wall -Wno-attributes -std=c99 -DUSE_SSE=1 -msse -fexcess-precision=fast" \
+		LDFLAGS="-lm -fopenmp"
+	make libimagequant.so
+}
+
+package() {
+	cd "$builddir"
+    install "libimagequant.so.0" "$pkgdir/$libdir/libimagequant.so.0"
+    cp -P "libimagequant.so" "$pkgdir/$libdir/libimagequant.so"
+    install "imagequant.pc" "$pkgdir/$pkgconfigdir/imagequant.pc"
+    install "libimagequant.h" "$pkgdir/$includedir/libimagequant.h"
+}

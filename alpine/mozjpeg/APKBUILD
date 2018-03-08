@@ -13,7 +13,7 @@ replaces="libjpeg libjpeg-turbo"
 subpackages="$pkgname-doc $pkgname-dev $pkgname-utils"
 source="https://github.com/mozilla/mozjpeg/releases/download/v$pkgver/mozjpeg-$pkgver-release-source.tar.gz"
 
-builddir="$srcdir"/mozjpeg
+builddir="$srcdir/$pkgname"
 
 build() {
 	cd "$builddir"
@@ -31,7 +31,7 @@ build() {
 
 check() {
 	cd "$builddir"
-	#make test
+	make test
 }
 
 package() {

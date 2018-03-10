@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	imagequant "github.com/larrabee/go-imagequant"
+	"github.com/larrabee/go-imagequant"
 	"github.com/valyala/fasthttp"
 	"gopkg.in/h2non/bimg.v1"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,8 +22,6 @@ type requestParams struct {
 	reQuality        int
 	reCompression    int
 }
-
-var httpClient = &http.Client{Timeout: imageDownloadTimeout}
 
 func resizeHandler(ctx *fasthttp.RequestCtx) {
 	params := requestParams{}
@@ -45,6 +43,7 @@ func resizeHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetBody(params.imageResizedBody)
 	ctx.SetContentType(params.imageContentType)
 	ctx.SetStatusCode(fasthttp.StatusOK)
+	//debug.FreeOSMemory()
 	return
 }
 
@@ -118,15 +117,21 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 }
 
 func getSourceImage(params *requestParams) (code int, err error) {
-	res, err := httpClient.Get(params.imageUrl.String())
+	transport := &http.Transport{DisableKeepAlives: false}
+	client := &http.Client{Transport: transport, Timeout: imageDownloadTimeout}
+	res, err := client.Get(params.imageUrl.String())
+	if res != nil {
+		defer res.Body.Close()
+	}
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
-	defer res.Body.Close()
+
 	if res.StatusCode != fasthttp.StatusOK {
 		return res.StatusCode, fmt.Errorf("status code %d != 200", res.StatusCode)
 	}
-	params.imageOriginBody, err = ioutil.ReadAll(res.Body)
+	params.imageOriginBody = make([]byte, res.ContentLength)
+	_, err = io.ReadFull(res.Body, params.imageOriginBody)
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
@@ -147,13 +152,14 @@ func resizeImage(params *requestParams) (err error) {
 		Trim:          true,
 	}
 
+	bimg.VipsCacheSetMax(0)
 	image := bimg.NewImage(params.imageOriginBody)
 	params.imageResizedBody, err = image.Process(options)
 	if err != nil {
 		return err
 	}
 	if image.Type() == "png" {
-		if err:= optimizePng(params); err != nil {
+		if err := optimizePng(params); err != nil {
 			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)
 		}
 	}

@@ -4,14 +4,13 @@ import (
 	"github.com/namsral/flag"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/reuseport"
+	"image/png"
 	"log"
 	"time"
-	"image/png"
 
 	//Profiling
 	"net/http"
 	_ "net/http/pprof"
-	"runtime"
 )
 
 var (
@@ -28,8 +27,8 @@ const (
 	resizeHeaderDefaultQuality     = 80
 	resizeHeaderNameCopression     = "x-resize-compression"
 	resizeHeaderDefaultCompression = 6
-	maxConcurrencyRequests         = 2048
-	imageDownloadTimeout           = 20 * time.Second
+	maxConcurrencyRequests         = 1024
+	imageDownloadTimeout           = 30 * time.Second
 	requestReadTimeout             = 10 * time.Second
 	responseWriteTimeout           = 20 * time.Second
 	resizePngSpeed                 = 1
@@ -40,7 +39,8 @@ func main() {
 	parseFlags()
 
 	if cfgListenDebug != "" {
-		runtime.SetBlockProfileRate(1)
+		//runtime.SetBlockProfileRate(1)
+		//runtime.MemProfileRate = 1
 		go func() {
 			log.Println(http.ListenAndServe(cfgListenDebug, nil))
 		}()

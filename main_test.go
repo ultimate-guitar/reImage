@@ -40,9 +40,12 @@ type testImage struct {
 
 var testSet = []testImage{
 	testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
+	testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 100, reCompression: 9}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
 	testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
+	testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 60, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
 	testImage{requestParams{reWidth: 427, reHeight: 284, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_1280x853.jpg"}},
 	testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
+	testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 9}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
 	testImage{requestParams{reWidth: 720, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_1920x1280.jpg"}},
 	testImage{requestParams{reWidth: 128, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_640x426.jpg"}},
 	testImage{requestParams{reWidth: 1600, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "owl_2048x1500.jpg"}},

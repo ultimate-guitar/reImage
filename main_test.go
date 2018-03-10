@@ -38,56 +38,95 @@ type testImage struct {
 	path   []string
 }
 
-var testSet = []testImage{
-	testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
-	testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 100, reCompression: 9}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
-	testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
-	testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 60, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
-	testImage{requestParams{reWidth: 427, reHeight: 284, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_1280x853.jpg"}},
-	testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
-	testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 9}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
-	testImage{requestParams{reWidth: 720, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_1920x1280.jpg"}},
-	testImage{requestParams{reWidth: 128, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_640x426.jpg"}},
-	testImage{requestParams{reWidth: 1600, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "owl_2048x1500.jpg"}},
-	testImage{requestParams{reWidth: 575, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "owl_640x468.jpg"}},
-	testImage{requestParams{reWidth: 1750, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "cc_705x453.png"}},
-	testImage{requestParams{reWidth: 0, reHeight: 1080, reQuality: 80, reCompression: 6}, []string{"samples", "png", "istanbul_3993x2311.png"}},
-	testImage{requestParams{reWidth: 500, reHeight: 500, reQuality: 80, reCompression: 6}, []string{"samples", "png", "penguin_1138x2378.png"}},
-	testImage{requestParams{reWidth: 50, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "penguin_380x793.png"}},
-	testImage{requestParams{reWidth: 640, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "wine_2400x2400.png"}},
-	testImage{requestParams{reWidth: 640, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "wine_800x800.png"}},
-}
-
 func TestResizeImage(t *testing.T) {
 	//runProfiler()
-	for _, image := range testSet {
+	var testSetGood = []testImage{
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 100, reCompression: 9}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
+		testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
+		testImage{requestParams{reWidth: 0, reHeight: 1488, reQuality: 60, reCompression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
+		testImage{requestParams{reWidth: 427, reHeight: 284, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_1280x853.jpg"}},
+		testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
+		testImage{requestParams{reWidth: 0, reHeight: 0, reQuality: 80, reCompression: 9}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
+		testImage{requestParams{reWidth: 720, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_1920x1280.jpg"}},
+		testImage{requestParams{reWidth: 128, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "fireworks_640x426.jpg"}},
+		testImage{requestParams{reWidth: 1600, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "owl_2048x1500.jpg"}},
+		testImage{requestParams{reWidth: 575, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "jpeg", "owl_640x468.jpg"}},
+		testImage{requestParams{reWidth: 1750, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "cc_705x453.png"}},
+		testImage{requestParams{reWidth: 0, reHeight: 1080, reQuality: 80, reCompression: 6}, []string{"samples", "png", "istanbul_3993x2311.png"}},
+		testImage{requestParams{reWidth: 500, reHeight: 500, reQuality: 80, reCompression: 6}, []string{"samples", "png", "penguin_1138x2378.png"}},
+		testImage{requestParams{reWidth: 50, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "penguin_380x793.png"}},
+		testImage{requestParams{reWidth: 640, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "wine_2400x2400.png"}},
+		testImage{requestParams{reWidth: 640, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "png", "wine_800x800.png"}},
+	}
+
+	fmt.Println("Test good images:")
+	for _, image := range testSetGood {
+		var err error
 		destPathA := make([]string, len(image.path))
 		copy(destPathA, image.path)
 		destPathA[0] = "results"
 		destPathA[2] = fmt.Sprintf("%s_to_%dx%d_q%d_c%d.%s", strings.Split(destPathA[2], ".")[0], image.params.reWidth, image.params.reHeight, image.params.reQuality, image.params.reCompression, strings.Split(destPathA[2], ".")[1])
 		sourcePath := path.Join(image.path...)
-
-		exPath, err := os.Getwd()
-		if err != nil {
-			fmt.Errorf("os.Getwd() err: %s", err)
-		}
-		destPath := path.Join(exPath, path.Join(destPathA...))
+		destPath := path.Join(destPathA...)
 		if err := os.MkdirAll(path.Dir(destPath), os.ModePerm); err != nil {
-			fmt.Errorf("Mkdir error on dir: %s, err: %s", path.Dir(destPath), err)
+			t.Errorf("mkdir error on dir: %s, err: %s", path.Dir(destPath), err)
 		}
 
 		fmt.Printf("Resize image\t%-50s\tTO\t%-50s\n", sourcePath, destPath)
 
 		if image.params.imageOriginBody, err = ioutil.ReadFile(sourcePath); err != nil {
-			fmt.Errorf("IO error on file: %s, err: %s", sourcePath, err)
+			t.Errorf("IO error on file: %s, err: %s", sourcePath, err)
 		}
 
 		if err := resize(&image.params); err != nil {
-			fmt.Errorf("Cannot resize image: %s, err: %s", sourcePath, err)
+			t.Errorf("cannot resize image: %s, err: %s", sourcePath, err)
 		}
 
 		if err := ioutil.WriteFile(destPath, image.params.imageResizedBody, 0644); err != nil {
-			fmt.Errorf("IO error on file: %s, err: %s", destPath, err)
+			t.Errorf("IO error on file: %s, err: %s", destPath, err)
+		}
+	}
+
+	var testSetBroken = []testImage{
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-1.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-2.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-3.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-4.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-5.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-6.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-7.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-8.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-9.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-10.jpg"}},
+		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-11.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xc1n0g08.png"}}, //color type 1
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xc9n2c08.png"}}, //color type 9
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xcrn0g04.png"}}, //added cr bytes
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xd0n2c08.png"}}, //bit-depth 0
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xd3n2c08.png"}}, //bit-depth 3
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xd9n2c08.png"}}, //bit-depth 99
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xdtn0g01.png"}}, //missing IDAT chunk
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xhdn0g08.png"}}, //incorrect IHDR checksum
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xlfn0g04.png"}}, //added lf bytes
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xs1n0g01.png"}}, //signature byte 1 MSBit reset to zero
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xs2n0g01.png"}}, //signature byte 2 is a 'Q'
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xs4n0g01.png"}}, //signature byte 4 lowercase
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xs7n0g01.png"}}, //7th byte a space instead of control-Z
+	}
+
+	fmt.Println("\n\nTest bad images:")
+	for _, image := range testSetBroken {
+		var err error
+		sourcePath := path.Join(image.path...)
+		fmt.Printf("Trying to resize image\t%-50s\n", sourcePath)
+
+		if image.params.imageOriginBody, err = ioutil.ReadFile(sourcePath); err != nil {
+			t.Errorf("IO error on file: %s, err: %s", sourcePath, err)
+		}
+
+		if err := resize(&image.params); err == nil {
+			t.Errorf("broken image resized without error: %s, err: %s", sourcePath, err)
 		}
 	}
 }

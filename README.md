@@ -64,7 +64,7 @@ Required options:
 
 Optional:
 4. Set `X-RESIZE-QUALITY` header if you want to override quality settings (default 80), alowed value: 1-100
-5. Set `X-RESIZE-COMPRESSION` header if you want to override quality settings (default 5), allowed value: 0-9  
+5. Set `X-RESIZE-COMPRESSION` header if you want to override compression settings for jpeg images (default 6), allowed value: 0-9
 
 ## Enjoy!
 * Upload [test image](http://www.publicdomainpictures.net/pictures/110000/velka/green-mountain-valley.jpg) to `/img/test.jpg` on your server

@@ -55,7 +55,7 @@ WORKDIR /usr/local/bin/
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 COPY --from=go /go/src/reImage/reImage .
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/mozjpeg-3.2-r0.apk /tmp/
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/vips-8.6.1-r0.apk /tmp/
+COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/vips-8.6.3-r0.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/lcms2-2.8-r2.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/tiff-4.0.9-r1.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/libimagequant-2.11.10-r0.apk /tmp/

@@ -136,8 +136,8 @@ func getSourceImage(params *requestParams) (code int, err error) {
 	if res.StatusCode != fasthttp.StatusOK {
 		return res.StatusCode, fmt.Errorf("status code %d != %d", res.StatusCode, fasthttp.StatusOK)
 	}
-	params.imageBody = make([]byte, res.ContentLength)
-	_, err = io.ReadFull(res.Body, params.imageBody)
+
+	params.imageBody, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
@@ -174,6 +174,7 @@ func resizeImage(params *requestParams) (err error) {
 			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)
 		}
 	}
+
 	return nil
 }
 

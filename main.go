@@ -7,15 +7,10 @@ import (
 	"gopkg.in/h2non/bimg.v1"
 	"log"
 	"time"
-
-	//Profiling
-	"net/http"
-	_ "net/http/pprof"
 )
 
 var (
 	cfgListen      string
-	cfgListenDebug string
 )
 
 const (
@@ -41,14 +36,6 @@ const (
 func main() {
 	parseFlags()
 
-	if cfgListenDebug != "" {
-		//runtime.SetBlockProfileRate(1)
-		//runtime.MemProfileRate = 1
-		go func() {
-			log.Println(http.ListenAndServe(cfgListenDebug, nil))
-		}()
-	}
-
 	listen, err := reuseport.Listen("tcp4", cfgListen)
 	if err != nil {
 		log.Fatalf("Error in reuseport listener: %s", err)
@@ -70,6 +57,5 @@ func main() {
 
 func parseFlags() {
 	flag.StringVar(&cfgListen, "CFG_LISTEN", "127.0.0.1:7075", "Listen interface and port")
-	flag.StringVar(&cfgListenDebug, "CFG_DEBUG", "", "Listen interface and port for debug")
 	flag.Parse()
 }

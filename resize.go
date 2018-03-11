@@ -16,8 +16,7 @@ import (
 
 type requestParams struct {
 	imageUrl         fasthttp.URI
-	imageOriginBody  []byte
-	imageResizedBody []byte
+	imageBody        []byte
 	imageContentType string
 	reWidth          int
 	reHeight         int
@@ -49,7 +48,7 @@ func resizeHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
-	ctx.SetBody(params.imageResizedBody)
+	ctx.SetBody(params.imageBody)
 	ctx.SetContentType(params.imageContentType)
 	ctx.SetStatusCode(fasthttp.StatusOK)
 	return
@@ -137,8 +136,8 @@ func getSourceImage(params *requestParams) (code int, err error) {
 	if res.StatusCode != fasthttp.StatusOK {
 		return res.StatusCode, fmt.Errorf("status code %d != %d", res.StatusCode, fasthttp.StatusOK)
 	}
-	params.imageOriginBody = make([]byte, res.ContentLength)
-	_, err = io.ReadFull(res.Body, params.imageOriginBody)
+	params.imageBody = make([]byte, res.ContentLength)
+	_, err = io.ReadFull(res.Body, params.imageBody)
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
@@ -148,7 +147,7 @@ func getSourceImage(params *requestParams) (code int, err error) {
 
 func resizeImage(params *requestParams) (err error) {
 	bimg.VipsCacheSetMax(resizeLibVipsCacheSize)
-	image := bimg.NewImage(params.imageOriginBody)
+	image := bimg.NewImage(params.imageBody)
 
 	options := bimg.Options{
 		Width:         params.reWidth,
@@ -166,7 +165,7 @@ func resizeImage(params *requestParams) (err error) {
 		options.Compression = params.reCompression
 	}
 
-	params.imageResizedBody, err = image.Process(options)
+	params.imageBody, err = image.Process(options)
 	if err != nil {
 		return err
 	}
@@ -183,11 +182,11 @@ func optimizePng(params *requestParams) (err error) {
 	if err != nil {
 		return err
 	}
-	image, err := imagequant.Crush(params.imageResizedBody, resizePngSpeed, compression)
+	image, err := imagequant.Crush(params.imageBody, resizePngSpeed, compression)
 	if err != nil {
 		return err
 	}
-	params.imageResizedBody = image
+	params.imageBody = image
 	return nil
 }
 

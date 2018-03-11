@@ -75,7 +75,7 @@ func TestResizeImage(t *testing.T) {
 
 		fmt.Printf("Resize image\t%-50s\tTO\t%-50s\n", sourcePath, destPath)
 
-		if image.params.imageOriginBody, err = ioutil.ReadFile(sourcePath); err != nil {
+		if image.params.imageBody, err = ioutil.ReadFile(sourcePath); err != nil {
 			t.Errorf("IO error on file: %s, err: %s", sourcePath, err)
 		}
 
@@ -83,23 +83,23 @@ func TestResizeImage(t *testing.T) {
 			t.Errorf("cannot resize image: %s, err: %s", sourcePath, err)
 		}
 
-		if err := ioutil.WriteFile(destPath, image.params.imageResizedBody, 0644); err != nil {
+		if err := ioutil.WriteFile(destPath, image.params.imageBody, 0644); err != nil {
 			t.Errorf("IO error on file: %s, err: %s", destPath, err)
 		}
 	}
 
 	var testSetBroken = []testImage{
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-1.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-2.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-3.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-4.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-5.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-6.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-7.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-8.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-9.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-10.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-11.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-1.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-2.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-3.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-4.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-5.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-6.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-7.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-8.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-9.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-10.jpg"}},
+		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "corrupted-11.jpg"}},
 		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xc1n0g08.png"}}, //color type 1
 		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xc9n2c08.png"}}, //color type 9
 		testImage{requestParams{reWidth: 10, reHeight: 0, reQuality: 80, reCompression: 6}, []string{"samples", "broken", "xcrn0g04.png"}}, //added cr bytes
@@ -121,7 +121,7 @@ func TestResizeImage(t *testing.T) {
 		sourcePath := path.Join(image.path...)
 		fmt.Printf("Trying to resize image\t%-50s\n", sourcePath)
 
-		if image.params.imageOriginBody, err = ioutil.ReadFile(sourcePath); err != nil {
+		if image.params.imageBody, err = ioutil.ReadFile(sourcePath); err != nil {
 			t.Errorf("IO error on file: %s, err: %s", sourcePath, err)
 		}
 

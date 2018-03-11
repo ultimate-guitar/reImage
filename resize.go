@@ -5,7 +5,9 @@ import (
 	"github.com/larrabee/go-imagequant"
 	"github.com/valyala/fasthttp"
 	"gopkg.in/h2non/bimg.v1"
+	"image/png"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,6 +24,13 @@ type requestParams struct {
 	reQuality        int
 	reCompression    int
 }
+
+var httpTransport = &http.Transport{
+	MaxIdleConns:        httpClientMaxIdleConns,
+	IdleConnTimeout:     httpClientIdleConnTimeout,
+	MaxIdleConnsPerHost: httpClientMaxIdleConnsPerHost,
+}
+var httpClient = &http.Client{Transport: httpTransport, Timeout: httpClientImageDownloadTimeout}
 
 func resizeHandler(ctx *fasthttp.RequestCtx) {
 	params := requestParams{}
@@ -43,7 +52,6 @@ func resizeHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetBody(params.imageResizedBody)
 	ctx.SetContentType(params.imageContentType)
 	ctx.SetStatusCode(fasthttp.StatusOK)
-	//debug.FreeOSMemory()
 	return
 }
 
@@ -79,12 +87,12 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 	}
 
 	// Parse Compression Header
-	if header := string(ctx.Request.Header.Peek(resizeHeaderNameCopression)); header == "" {
+	if header := string(ctx.Request.Header.Peek(resizeHeaderNameCompression)); header == "" {
 		params.reCompression = resizeHeaderDefaultCompression
 	} else {
 		compression, err := strconv.Atoi(header)
-		if (err != nil) || compression < 0 {
-			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCopression, header)
+		if (err != nil) || compression < 0 || compression > 9 {
+			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCompression, header)
 		}
 		params.reCompression = compression
 	}
@@ -117,18 +125,17 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 }
 
 func getSourceImage(params *requestParams) (code int, err error) {
-	transport := &http.Transport{DisableKeepAlives: false}
-	client := &http.Client{Transport: transport, Timeout: imageDownloadTimeout}
-	res, err := client.Get(params.imageUrl.String())
+	res, err := httpClient.Get(params.imageUrl.String())
 	if res != nil {
 		defer res.Body.Close()
+		defer io.Copy(ioutil.Discard, res.Body)
 	}
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
 
 	if res.StatusCode != fasthttp.StatusOK {
-		return res.StatusCode, fmt.Errorf("status code %d != 200", res.StatusCode)
+		return res.StatusCode, fmt.Errorf("status code %d != %d", res.StatusCode, fasthttp.StatusOK)
 	}
 	params.imageOriginBody = make([]byte, res.ContentLength)
 	_, err = io.ReadFull(res.Body, params.imageOriginBody)
@@ -140,20 +147,25 @@ func getSourceImage(params *requestParams) (code int, err error) {
 }
 
 func resizeImage(params *requestParams) (err error) {
+	bimg.VipsCacheSetMax(resizeLibVipsCacheSize)
+	image := bimg.NewImage(params.imageOriginBody)
+
 	options := bimg.Options{
 		Width:         params.reWidth,
 		Height:        params.reHeight,
 		Quality:       params.reQuality,
-		Compression:   params.reCompression,
-		Interpolator:  bimg.Nohalo,
+		Interpolator:  resizeLibVipsInterpolator,
 		StripMetadata: true,
 		NoProfile:     true,
 		Embed:         true,
-		Trim:          true,
 	}
 
-	bimg.VipsCacheSetMax(0)
-	image := bimg.NewImage(params.imageOriginBody)
+	if image.Type() == "png" {
+		options.Compression = 0 // Image will be compressed later, on optimization step
+	} else {
+		options.Compression = params.reCompression
+	}
+
 	params.imageResizedBody, err = image.Process(options)
 	if err != nil {
 		return err
@@ -167,10 +179,29 @@ func resizeImage(params *requestParams) (err error) {
 }
 
 func optimizePng(params *requestParams) (err error) {
-	image, err := imagequant.Crush(params.imageResizedBody, resizePngSpeed, resizePngCompression)
+	compression, err := zlibCompressionLevelToPNG(params.reCompression)
+	if err != nil {
+		return err
+	}
+	image, err := imagequant.Crush(params.imageResizedBody, resizePngSpeed, compression)
 	if err != nil {
 		return err
 	}
 	params.imageResizedBody = image
 	return nil
+}
+
+func zlibCompressionLevelToPNG(zlibLevel int) (png.CompressionLevel, error) {
+	switch zlibLevel {
+	case 0:
+		return png.NoCompression, nil
+	case 9:
+		return png.BestCompression, nil
+	case 1, 2, 3, 4:
+		return png.BestSpeed, nil
+	case 5, 6, 7, 8:
+		return png.DefaultCompression, nil
+	default:
+		return png.DefaultCompression, fmt.Errorf("wrong zlib compression level: %d", zlibLevel)
+	}
 }

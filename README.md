@@ -16,12 +16,15 @@
 1. Pull docker container:  `docker pull larrabee/reimage`
 2. Run it with `docker run -d -p 7075:7075 reimage` or use docker-compose config:
 ```
-version: '2'
+version: '2.2'
 services:
   reImage:
       image: reimage
-      container_name: "reImage"
       restart: always
+      scale: 8  # Replace it with your vCPU count
+      environment:
+        CFG_LISTEN: :7075
+        GOMAXPROCS: 1
       ports:
         - 7075:7075
 ```

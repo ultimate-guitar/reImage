@@ -77,7 +77,7 @@ Optional:
 * Get resized to 500x500 version (image will be resized and striped to 500x500) [http://example.com/img/test.jpg@500x500](http://example.com/img/test.jpg@500x500)
 
 ## Benchmark
-See [benchmark Wiki page](./wiki/Benchmark)
+See [benchmark Wiki page](https://github.com/ultimate-guitar/reImage/wiki/Benchmark)
 
 ## LICENSE
 MIT

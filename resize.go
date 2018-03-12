@@ -165,6 +165,10 @@ func resizeImage(params *requestParams) (err error) {
 		options.Compression = params.reCompression
 	}
 
+	if image.Type() == "gif" {
+		options.Type = bimg.JPEG
+	}
+
 	params.imageBody, err = image.Process(options)
 	if err != nil {
 		return err

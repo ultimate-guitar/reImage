@@ -77,31 +77,7 @@ Optional:
 * Get resized to 500x500 version (image will be resized and striped to 500x500) [http://example.com/img/test.jpg@500x500](http://example.com/img/test.jpg@500x500)
 
 ## Benchmark
-##### Config
- - CPU: Intel Xeon E5-1650 v3 @ 3.50GHz  6 core (12 vCPU)
- - RAM: 64 Gb (used around 2 Gb)
- - Workers count: 12
- - GOMAXPROCS: 1
- - X-RESIZE-QUALITY: 80
- - X-RESIZE-COMPRESSION: 6
- - X-RESIZE-SCHEME: https
- - Jmeter threads: 100
-
-##### Results
-
-| File                               | Type | Input Res | Input size | Output Res | Output size | RPS | AVG request time, ms |
-|------------------------------------|------|-----------|------------|------------|-------------|-----|----------------------|
-| samples/jpeg/bird_1920x1279.jpg    | JPEG | 1920x1279 | 391 Kb     | 800x533    | 53 Kb       | 73  | 1060                 |
-| samples/jpeg/clock_1280x853.jpg    | JPEG | 1280x853  | 222 Kb     | 400x267    | 23 Kb       | 206 | 386                  |
-| samples/jpeg/clock_6000x4000.jpg   | JPEG | 6000x4000 | 3.8 Mb     | 4000x2667  | 793 Kb      | 5.6 | 3513                 |
-| samples/jpeg/owl_640x468.jpg       | JPEG | 640x468   | 87 Kb      | 240x176    | 9.8 Kb      | 401 | 298                  |
-| samples/jpeg/fireworks_640x426.jpg | JPEG | 640x468   | 40.7       | 100x67     | 1.3 Kb      | 532 | 226                  |
-| samples/png/cc_705x453.png         | PNG  | 705x453   | 117 Kb     | 405x260    | 60 Kb       | 33  | 1208                 |
-| samples/png/istanbul_3993x2311.png | PNG  | 3993x2311 | 1.8 Mb     | 2048x1185  | 537 Kb      | 3.5 | 3376                 |
-| samples/png/penguin_380x793.png    | PNG  | 380x793   | 27.7 Kb    | 280x584    | 19.7 Kb     | 69  | 430                  |
-| samples/png/penguin_380x793.png    | PNG  | 380x793   | 27.7 Kb    | 58x120     | 3.8 Kb      | 129 | 232                  |
-| samples/png/wine_800x800.png       | PNG  | 800x800   | 22.4 Kb    | 600x600    | 15.9 Kb     | 49  | 617                  |
-| samples/png/wine_800x800.png       | PNG  | 800x800   | 22.4 Kb    | 200x200    | 5 Kb        | 114 | 265                  |
+See [benchmark Wiki page](./wiki/Benchmark)
 
 ## LICENSE
 MIT

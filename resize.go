@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/larrabee/go-imagequant"
+	"github.com/ultimate-guitar/go-imagequant"
 	"github.com/valyala/fasthttp"
 	"gopkg.in/h2non/bimg.v1"
 	"image/png"

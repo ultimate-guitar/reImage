@@ -28,6 +28,8 @@ services:
       ports:
         - 7075:7075
 ```
+3. Why I should run multiple workers?  
+   See [issue #1](/../../issues/1)
 
 ## Configure frontend
 This is basic Nginx config for online resizing with nginx cache.
@@ -66,8 +68,8 @@ Required options:
 3. Set you image server hostname here: `X-RESIZE-BASE "example.com"`
 
 Optional:
-4. Set `X-RESIZE-QUALITY` header if you want to override quality settings (default 80), alowed value: 1-100
-5. Set `X-RESIZE-COMPRESSION` header if you want to override compression settings for jpeg images (default 6), allowed value: 0-9
+4. Set `X-RESIZE-QUALITY` header if you want to override quality settings. Default value: 80, allowed values: 1-100
+5. Set `X-RESIZE-COMPRESSION` header if you want to override compression settings. Default value: 6, allowed values: 0-9
 
 ## Enjoy!
 * Upload [test image](http://www.publicdomainpictures.net/pictures/110000/velka/green-mountain-valley.jpg) to `/img/test.jpg` on your server

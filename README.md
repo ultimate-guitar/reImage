@@ -19,16 +19,15 @@
 version: '2.2'
 services:
   reImage:
-      image: reimage
+      image: larrabee/reimage
       restart: always
+      network: host # Use host nework for better performance
       scale: 8  # Replace it with your vCPU count
       environment:
-        CFG_LISTEN: :7075
+        CFG_LISTEN: 127.0.0.1:7075
         GOMAXPROCS: 1  # Set 1 for low latency, 2-4 for max throughput
-      ports:
-        - 7075:7075
 ```
-3. Why I should run multiple workers?  
+3. Why I should run multiple workers?
    See [issue #1](/../../issues/1)
 
 ## Configure frontend

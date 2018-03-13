@@ -61,17 +61,18 @@ http {
     }
 }
 ```
-Required options:
-1. Replace `localhost:7075` with your hostname and port if you ran resizer in different node.
+Required options: 
+1. Replace `localhost:7075` with your hostname and port if you ran resizer in different node. 
 2. Set `X-RESIZE-SCHEME "http"` if your image server with original images run over http (by default use https). 
-3. Set you image server hostname here: `X-RESIZE-BASE "example.com"`
+3. Set you image server hostname here: `X-RESIZE-BASE "example.com"` 
 
-Optional:
-4. Set `X-RESIZE-QUALITY` header if you want to override quality settings. Default value: 80, allowed values: 1-100
-5. Set `X-RESIZE-COMPRESSION` header if you want to override compression settings. Default value: 6, allowed values: 0-9
+Optional: 
+1. Set `X-RESIZE-QUALITY` header if you want to override quality settings. Default value: 80, allowed values: 1-100 
+2. Set `X-RESIZE-COMPRESSION` header if you want to override compression settings. Default value: 6, allowed values: 0-9 
+
 
 ## Enjoy!
-* Upload [test image](http://www.publicdomainpictures.net/pictures/110000/velka/green-mountain-valley.jpg) to `/img/test.jpg` on your server
+* Upload [test image](samples/jpeg/bird_1920x1279.jpg) to `/img/test.jpg` on your server
 * Get original image [http://example.com/img/test.jpg](http://example.com/img/test.jpg) (naturally it must be present on your server).
 * Get resized to 1280x720 version [http://example.com/img/test.jpg@1280](http://example.com/img/test.jpg@1280) (height resolution will be calculate automatically)
 * Another way: [http://example.com/img/test.jpg@x720](http://example.com/img/test.jpg@x720) (width resolution will be calculate automatically)

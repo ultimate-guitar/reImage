@@ -28,7 +28,7 @@ const (
 	serverMaxConcurrencyRequests   = 2048
 	serverRequestReadTimeout       = 10 * time.Second
 	serverResponseWriteTimeout     = 20 * time.Second
-	resizePngSpeed                 = 2
+	resizePngSpeed                 = 3
 	resizeLibVipsInterpolator      = bimg.Bicubic
 	resizeLibVipsCacheSize         = 128 // Operations cache size. Increase it gain high perforce and high memory usage
 )

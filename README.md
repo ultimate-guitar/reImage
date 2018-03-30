@@ -15,7 +15,7 @@
 ## Deploy
 1. Pull docker container:  `docker pull larrabee/reimage`
 2. Run it with `docker run -d -p 7075:7075 reimage` or use docker-compose config:
-```
+```yml
 version: '2.2'
 services:
   reImage:
@@ -32,10 +32,7 @@ services:
 
 ## Configure frontend
 This is basic Nginx config for online resizing with nginx cache.
-```
-events {
-}
-
+```nginx
 http {
     proxy_cache_path /var/www/resize_cache levels=1:2 
     keys_zone=resized_img:64m inactive=48h max_size=5G use_temp_path=off;
@@ -73,10 +70,10 @@ Optional:
 
 ## Enjoy!
 * Upload [test image](samples/jpeg/bird_1920x1279.jpg) to `/img/test.jpg` on your server
-* Get original image [http://example.com/img/test.jpg](http://example.com/img/test.jpg) (naturally it must be present on your server).
-* Get resized to 1280x720 version [http://example.com/img/test.jpg@1280](http://example.com/img/test.jpg@1280) (height resolution will be calculate automatically)
-* Another way: [http://example.com/img/test.jpg@x720](http://example.com/img/test.jpg@x720) (width resolution will be calculate automatically)
-* Get resized to 500x500 version (image will be resized and striped to 500x500) [http://example.com/img/test.jpg@500x500](http://example.com/img/test.jpg@500x500)
+* Get original image [`http://example.com/img/test.jpg`](http://example.com/img/test.jpg) (naturally it must be present on your server).
+* Get resized to 1280x720 version [`http://example.com/img/test.jpg@1280`](http://example.com/img/test.jpg@1280) (height resolution will be calculate automatically)
+* Another way: [`http://example.com/img/test.jpg@x720`](http://example.com/img/test.jpg@x720) (width resolution will be calculate automatically)
+* Get resized to 500x500 version (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500`](http://example.com/img/test.jpg@500x500)
 
 ## Benchmark
 See [benchmark Wiki page](https://github.com/ultimate-guitar/reImage/wiki/Benchmark)

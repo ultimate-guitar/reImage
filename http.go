@@ -11,7 +11,6 @@ import (
 	"strings"
 )
 
-
 type requestParams struct {
 	imageUrl         fasthttp.URI
 	imageBody        []byte
@@ -29,7 +28,7 @@ var httpTransport = &http.Transport{
 }
 var httpClient = &http.Client{Transport: httpTransport, Timeout: httpClientImageDownloadTimeout}
 
-func resizeHandler(ctx *fasthttp.RequestCtx) {
+func getResizeHandler(ctx *fasthttp.RequestCtx) {
 	params := requestParams{}
 	if err := requestParser(ctx, &params); err != nil {
 		log.Printf("Can not parse requested url: '%s', err: %s", ctx.URI(), err)
@@ -52,12 +51,31 @@ func resizeHandler(ctx *fasthttp.RequestCtx) {
 	return
 }
 
+func postResizeHandler(ctx *fasthttp.RequestCtx) {
+	params := requestParams{imageBody: ctx.PostBody()}
+	if err := requestParser(ctx, &params); err != nil {
+		log.Printf("Can not parse requested url: '%s', err: %s", ctx.URI(), err)
+		ctx.SetStatusCode(fasthttp.StatusBadRequest)
+		return
+	}
+	if err := resizeImage(&params); err != nil {
+		log.Printf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
+		return
+	}
+	ctx.SetBody(params.imageBody)
+	ctx.SetContentType(params.imageContentType)
+	ctx.SetStatusCode(fasthttp.StatusOK)
+	return
+}
+
+
 func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) {
 	params.imageUrl = fasthttp.URI{}
 	params.imageUrl.SetQueryStringBytes(ctx.URI().QueryString())
 	sourceHeader := string(ctx.Request.Header.Peek(resizeHeaderNameSource))
-	if sourceHeader == "" {
-		return fmt.Errorf("empty '%s' header", resizeHeaderNameSource)
+	if (sourceHeader == "") && ctx.IsGet()  {
+		return fmt.Errorf("empty '%s' header on GET request", resizeHeaderNameSource)
 	}
 	params.imageUrl.SetHost(sourceHeader)
 
@@ -110,9 +128,7 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 			}
 		}
 
-		if (params.reWidth == 0) && (params.reHeight == 0) {
-			return fmt.Errorf("both reWidth and reHeight have zero value")
-		} else if params.reWidth < 0 {
+		if params.reWidth < 0 {
 			return fmt.Errorf("reWidth have negative value")
 		} else if params.reHeight < 0 {
 			return fmt.Errorf("reHeight have negative value")

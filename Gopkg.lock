@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/buaazp/fasthttprouter"
+  packages = ["."]
+  revision = "ade4e2031af3aed7fffd241084aad80a58faf421"
+  version = "v0.1.1"
+
+[[projects]]
   name = "github.com/klauspost/compress"
   packages = [
     "flate",
@@ -54,6 +60,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2b01e40e257501a75cca774722e58f0d04b3789451eb6f46169b02bdeb5c2387"
+  inputs-digest = "18ef36742651874b98ab108ad63ad8953c4a127886d76376f66a242554838ae3"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/buaazp/fasthttprouter"
 	"github.com/namsral/flag"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/reuseport"
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	cfgListen      string
+	cfgListen string
 )
 
 const (
@@ -40,10 +41,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error in reuseport listener: %s", err)
 	}
+
+	router := getRouter()
+
 	server := &fasthttp.Server{
-		Handler:          resizeHandler,
+		Handler:          router.Handler,
 		DisableKeepalive: true,
-		GetOnly:          true,
+		GetOnly:          false,
 		Concurrency:      serverMaxConcurrencyRequests,
 		ReadTimeout:      serverRequestReadTimeout,
 		WriteTimeout:     serverResponseWriteTimeout,
@@ -53,6 +57,13 @@ func main() {
 	if err := server.Serve(listen); err != nil {
 		log.Fatalf("Error in ListenAndServe: %s", err)
 	}
+}
+
+func getRouter() *fasthttprouter.Router {
+	router := fasthttprouter.New()
+	router.GET("/*p", getResizeHandler)
+	router.POST("/*p", postResizeHandler)
+	return router
 }
 
 func parseFlags() {

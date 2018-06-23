@@ -30,12 +30,6 @@ COPY --chown=abuild:abuild alpine/vips/APKBUILD ./
 RUN sudo chown abuild:abuild ./ && abuild checksum
 RUN abuild -r || abuild -r
 
-# Building libimagequant
-WORKDIR /tmp/libimagequant
-COPY --chown=abuild:abuild alpine/libimagequant/APKBUILD ./
-RUN sudo chown abuild:abuild ./ && abuild checksum
-RUN abuild -r || abuild -r
-
 
 # Building reImage
 FROM alpine:edge AS go
@@ -54,11 +48,10 @@ FROM alpine:edge AS release
 WORKDIR /usr/local/bin/
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 COPY --from=go /go/src/reImage/reImage .
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/mozjpeg-3.2-r0.apk /tmp/
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/vips-8.6.3-r0.apk /tmp/
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/lcms2-2.8-r2.apk /tmp/
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/tiff-4.0.9-r1.apk /tmp/
-COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/libimagequant-2.11.10-r0.apk /tmp/
-ENV CFG_LISTEN ":7075"
+COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/mozjpeg*.apk /tmp/
+COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/vips*.apk /tmp/
+COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/lcms2*.apk /tmp/
+COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/tiff*.apk /tmp/
 RUN apk add --allow-untrusted /tmp/*.apk && apk add --no-cache ca-certificates
+ENV CFG_LISTEN ":7075"
 CMD ["./reImage"]

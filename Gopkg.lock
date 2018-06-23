@@ -14,19 +14,13 @@
     "gzip",
     "zlib"
   ]
-  revision = "6c8db69c4b49dd4df1fff66996cf556176d0b9bf"
-  version = "v1.2.1"
+  revision = "5fb1f31b0a61e9858f12f39266e059848a5f1cea"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/klauspost/cpuid"
   packages = ["."]
   revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/klauspost/crc32"
-  packages = ["."]
-  revision = "cb6bfca970f6908083f26f39a79009d608efd5cd"
   version = "v1.1"
 
 [[projects]]
@@ -39,7 +33,7 @@
   branch = "master"
   name = "github.com/ultimate-guitar/go-imagequant"
   packages = ["."]
-  revision = "a5758912d2dfd3e02c3c88b5959a7d558b67f78e"
+  revision = "9e35d7d6ca58e35a15bd21b510a36aeeb835fef6"
 
 [[projects]]
   name = "github.com/valyala/fasthttp"

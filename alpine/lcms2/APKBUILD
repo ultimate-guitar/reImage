@@ -1,8 +1,8 @@
 # Contributor: Sergei Lukin <sergej.lukin@gmail.com>
 # Maintainer: Natanael Copa <ncopa@alpinelinux.org>
 pkgname=lcms2
-pkgver=2.8
-pkgrel=2
+pkgver=2.9
+pkgrel=0
 pkgdesc="Color Management Engine"
 url="http://www.littlecms.com/"
 arch="all"
@@ -12,13 +12,7 @@ depends_dev="mozjpeg-dev tiff-dev zlib-dev"
 makedepends="$depends_dev"
 install=""
 subpackages="$pkgname-dev $pkgname-doc $pkgname-utils"
-source="http://www.littlecms.com/lcms2-$pkgver.tar.gz
-	CVE-2016-10165.patch
-	"
-
-# secfixes:
-#   2.8-r1:
-#   - CVE-2016-10165
+source="http://www.littlecms.com/$pkgname-$pkgver.tar.gz"
 
 build() {
 	cd "$builddir"

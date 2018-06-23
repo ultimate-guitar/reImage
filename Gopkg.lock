@@ -33,7 +33,7 @@
   branch = "master"
   name = "github.com/ultimate-guitar/go-imagequant"
   packages = ["."]
-  revision = "9e35d7d6ca58e35a15bd21b510a36aeeb835fef6"
+  revision = "b579eaf0f7d89276c4bdeb80e1b0d9668df109fc"
 
 [[projects]]
   name = "github.com/valyala/fasthttp"

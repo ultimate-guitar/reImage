@@ -1,22 +1,23 @@
 # Contributor: larrabee <kafatron@gmail.com>
 # Maintainer: larrabee <kafatron@gmail.com>
 pkgname=mozjpeg
-pkgver=3.2
+pkgver=3.3.1
 pkgrel=0
 pkgdesc="accelerated baseline JPEG compression and decompression library based on libjpeg-turbo"
 url="https://github.com/mozilla/mozjpeg"
 arch="all"
 license="IJG"
 depends=""
-makedepends="nasm pkgconfig autoconf automake"
+makedepends="nasm pkgconfig autoconf automake libtool"
 replaces="libjpeg libjpeg-turbo"
 subpackages="$pkgname-doc $pkgname-dev $pkgname-utils"
-source="https://github.com/mozilla/mozjpeg/releases/download/v$pkgver/$pkgname-$pkgver-release-source.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://github.com/mozilla/mozjpeg/archive/v$pkgver.tar.gz"
 
-builddir="$srcdir/$pkgname"
+builddir="$srcdir/$pkgname-$pkgver"
 
 build() {
 	cd "$builddir"
+        autoreconf -fiv
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \

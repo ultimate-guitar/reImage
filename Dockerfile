@@ -1,6 +1,6 @@
 FROM alpine:edge AS mozjpeg
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk add --no-cache alpine-sdk
+RUN apk add --no-cache alpine-sdk nasm autoconf automake libtool pkgconfig
 RUN adduser -s /bin/sh -D -G abuild abuild
 RUN echo "%abuild ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/abuild
 USER abuild

@@ -28,14 +28,19 @@ func resizeImage(params *requestParams) (err error) {
 		options.Compression = params.reCompression
 	}
 
-	if image.Type() == "gif" {
+	// Special option for some image types
+	switch image.Type() {
+	case "gif":
 		options.Type = bimg.JPEG
+	case "webp":
+		params.imageContentType = "image/webp"
 	}
 
 	params.imageBody, err = image.Process(options)
 	if err != nil {
 		return err
 	}
+
 	if image.Type() == "png" {
 		if err := optimizePng(params); err != nil {
 			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)

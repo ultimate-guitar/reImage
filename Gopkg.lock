@@ -2,58 +2,70 @@
 
 
 [[projects]]
+  digest = "1:77509b45a656ec997c630eae731b53fe51a302d01300a6244be2678383b89fd1"
   name = "github.com/buaazp/fasthttprouter"
   packages = ["."]
+  pruneopts = ""
   revision = "ade4e2031af3aed7fffd241084aad80a58faf421"
   version = "v0.1.1"
 
 [[projects]]
+  digest = "1:4d0614a5d2e5e394368521b087428b2996ae95ebc4699afabc61adac9b7cec38"
   name = "github.com/klauspost/compress"
   packages = [
     "flate",
     "gzip",
-    "zlib"
+    "zlib",
   ]
-  revision = "5fb1f31b0a61e9858f12f39266e059848a5f1cea"
-  version = "v1.3.0"
+  pruneopts = ""
+  revision = "b939724e787a27c0005cabe3f78e7ed7987ac74f"
+  version = "v1.4.0"
 
 [[projects]]
+  digest = "1:f0117357f14b0a625ddbbe25e23637291ac0276402fcfd25fc447422456364ce"
   name = "github.com/klauspost/cpuid"
   packages = ["."]
+  pruneopts = ""
   revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
   version = "v1.1"
 
 [[projects]]
+  digest = "1:0828677c3ebed3fc9c4f11e17e7997a733e62a3f20b38d00d70e756b681b46ab"
   name = "github.com/namsral/flag"
   packages = ["."]
+  pruneopts = ""
   revision = "71ceffbeb0ba60fccc853971bb3ed4d7d90bfd04"
   version = "v1.7.4-pre"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/ultimate-guitar/go-imagequant"
-  packages = ["."]
-  revision = "b579eaf0f7d89276c4bdeb80e1b0d9668df109fc"
-
-[[projects]]
+  digest = "1:1649dbf51658af1b6338f8ad8fdd4bfb01b3ae20f5474e5016fa40c5cfe7c960"
   name = "github.com/valyala/fasthttp"
   packages = [
     ".",
     "fasthttputil",
-    "reuseport"
+    "reuseport",
   ]
+  pruneopts = ""
   revision = "d42167fd04f636e20b005e9934159e95454233c7"
   version = "v20160617"
 
 [[projects]]
+  digest = "1:c76862fa9fce00d62a1a24150eb609af6aac4d42ac5ef5aeab38b87d62ea2b49"
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
+  pruneopts = ""
   revision = "02e621739c77c791d8c153f240b7a1f75b07816f"
   version = "v1.0.18"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "18ef36742651874b98ab108ad63ad8953c4a127886d76376f66a242554838ae3"
+  input-imports = [
+    "github.com/buaazp/fasthttprouter",
+    "github.com/namsral/flag",
+    "github.com/valyala/fasthttp",
+    "github.com/valyala/fasthttp/reuseport",
+    "gopkg.in/h2non/bimg.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -24,14 +24,13 @@
 #   go-tests = true
 #   unused-packages = true
 
+ignored = [
+"github.com/ultimate-guitar/go-imagequant"
+]
 
 [[constraint]]
   name = "github.com/namsral/flag"
   version = "1.7.4-pre"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/ultimate-guitar/go-imagequant"
 
 [[constraint]]
   name = "github.com/valyala/fasthttp"
@@ -40,7 +39,3 @@
 [[constraint]]
   name = "gopkg.in/h2non/bimg.v1"
   version = "1.0.18"
-
-[prune]
-  go-tests = true
-  unused-packages = true

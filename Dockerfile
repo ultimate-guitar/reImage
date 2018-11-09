@@ -9,25 +9,25 @@ RUN abuild-keygen -a -i -n -q
 # Buildind mozjpeg and installing it
 WORKDIR /tmp/mozjpeg
 COPY --chown=abuild:abuild alpine/mozjpeg/APKBUILD ./
-RUN sudo chown abuild:abuild ./ && abuild checksum
+RUN sudo chown abuild:abuild ./
 RUN abuild -r -i || abuild -r -i
 
 # Building tiff and installing it
 WORKDIR /tmp/tiff
 COPY --chown=abuild:abuild alpine/tiff/* ./
-RUN sudo chown abuild:abuild ./ && abuild checksum
+RUN sudo chown abuild:abuild ./
 RUN abuild -r -i || abuild -r -i
 
 # Building lcms2 and installing it
 WORKDIR /tmp/lcms2
 COPY --chown=abuild:abuild alpine/lcms2/* ./
-RUN sudo chown abuild:abuild ./ && abuild checksum
+RUN sudo chown abuild:abuild ./
 RUN abuild -r -i || abuild -r -i
 
 # Building libvips
 WORKDIR /tmp/vips
 COPY --chown=abuild:abuild alpine/vips/APKBUILD ./
-RUN sudo chown abuild:abuild ./ && abuild checksum
+RUN sudo chown abuild:abuild ./
 RUN abuild -r || abuild -r
 
 
@@ -36,10 +36,12 @@ FROM alpine:edge AS go
 WORKDIR /go/src/reImage
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/*.apk /tmp/
-RUN apk add --allow-untrusted /tmp/*.apk && apk add --no-cache go git fftw-dev musl-dev
+RUN apk add --allow-untrusted /tmp/*.apk && apk add --no-cache go git fftw-dev musl-dev dep
 ENV GOPATH /go
 COPY *.go ./
-RUN go get
+COPY Gopkg.* ./
+RUN go get github.com/ultimate-guitar/go-imagequant
+RUN dep ensure
 RUN go build -o reImage *.go
 
 

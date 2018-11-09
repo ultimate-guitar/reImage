@@ -30,10 +30,10 @@ build() {
 	make
 }
 
-check() {
-	cd "$builddir"
-	make test
-}
+#check() {
+#	cd "$builddir"
+#	make test
+#}
 
 package() {
 	cd "$builddir"
@@ -57,3 +57,5 @@ dev() {
 	default_dev
 	replaces="jpeg-dev libjpeg-turbo-dev"
 }
+
+sha512sums="d2671fe161b7178e7493476c18ca251707b7c47f973c27c3e8930f82bcb5a416af42826a6d78616234a4c71e342f6da068c4cc9cc97cc035a7d2cffcbe71e44f  mozjpeg-3.3.1.tar.gz"

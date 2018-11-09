@@ -38,4 +38,5 @@ ignored = [
 
 [[constraint]]
   name = "gopkg.in/h2non/bimg.v1"
-  version = "1.0.18"
+  source = "github.com/danpersa/bimg"
+  branch = "update-vips"

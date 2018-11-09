@@ -50,12 +50,13 @@
   version = "v20160617"
 
 [[projects]]
-  digest = "1:c76862fa9fce00d62a1a24150eb609af6aac4d42ac5ef5aeab38b87d62ea2b49"
+  branch = "update-vips"
+  digest = "1:540ddb5432d69856f5a36302d05af0f50136c8485ba3f3c45d5553f271faf584"
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
   pruneopts = ""
-  revision = "02e621739c77c791d8c153f240b7a1f75b07816f"
-  version = "v1.0.18"
+  revision = "98902da9c798475f15d4890e2bae06ebf9b985ee"
+  source = "github.com/danpersa/bimg"
 
 [solve-meta]
   analyzer-name = "dep"

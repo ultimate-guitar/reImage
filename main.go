@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-var (
-	cfgListen string
-)
-
 type Config struct {
 	Listen string
 	SkipEmptyImages bool
@@ -44,7 +40,7 @@ var config = Config{}
 func main() {
 	parseFlags()
 
-	listen, err := reuseport.Listen("tcp4", cfgListen)
+	listen, err := reuseport.Listen("tcp4", config.Listen)
 	if err != nil {
 		log.Fatalf("Error in reuseport listener: %s", err)
 	}

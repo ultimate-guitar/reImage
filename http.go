@@ -40,6 +40,14 @@ func getResizeHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(code)
 		return
 	}
+
+	if config.SkipEmptyImages && len(params.imageBody) == 0 {
+		log.Printf("Empty images skipped: %s", params.imageUrl.String())
+		ctx.SetContentType(params.imageContentType)
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		return
+	}
+
 	if err := resizeImage(&params); err != nil {
 		log.Printf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
@@ -58,11 +66,13 @@ func postResizeHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
+
 	if err := resizeImage(&params); err != nil {
 		log.Printf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
 		return
 	}
+
 	ctx.SetBody(params.imageBody)
 	ctx.SetContentType(params.imageContentType)
 	ctx.SetStatusCode(fasthttp.StatusOK)

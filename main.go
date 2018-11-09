@@ -14,6 +14,11 @@ var (
 	cfgListen string
 )
 
+type Config struct {
+	Listen string
+	SkipEmptyImages bool
+}
+
 const (
 	resizeHeaderNameSource         = "x-resize-base"
 	resizeHeaderNameSchema         = "x-resize-scheme"
@@ -34,6 +39,8 @@ const (
 	resizeLibVipsCacheSize         = 128 // Operations cache size. Increase it gain high perforce and high memory usage
 )
 
+var config = Config{}
+
 func main() {
 	parseFlags()
 
@@ -53,7 +60,7 @@ func main() {
 		WriteTimeout:     serverResponseWriteTimeout,
 	}
 
-	log.Printf("Server started on %s\n", cfgListen)
+	log.Printf("Server started on %s\n", config.Listen)
 	if err := server.Serve(listen); err != nil {
 		log.Fatalf("Error in ListenAndServe: %s", err)
 	}
@@ -67,6 +74,7 @@ func getRouter() *fasthttprouter.Router {
 }
 
 func parseFlags() {
-	flag.StringVar(&cfgListen, "CFG_LISTEN", "127.0.0.1:7075", "Listen interface and port")
+	flag.StringVar(&config.Listen, "CFG_LISTEN", "127.0.0.1:7075", "Listen interface and port")
+	flag.BoolVar(&config.SkipEmptyImages, "CFG_SKIP_EMPTY_IMAGES", false, "Skip empty images resizing")
 	flag.Parse()
 }

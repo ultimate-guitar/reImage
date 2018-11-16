@@ -20,20 +20,31 @@ func resizeImage(params *requestParams) (err error) {
 		StripMetadata: true,
 		NoProfile:     true,
 		Embed:         true,
+		Type:          params.reFormat,
 	}
 
-	if image.Type() == "png" {
+	// Special option for some image types
+	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
 		options.Compression = 0 // Image will be compressed later, on optimization step
 	} else {
 		options.Compression = params.reCompression
 	}
 
-	// Special option for some image types
-	switch image.Type() {
-	case "gif":
+	if image.Type() == "gif" && options.Type == bimg.UNKNOWN {
 		options.Type = bimg.JPEG
-	case "webp":
-		params.imageContentType = "image/webp"
+		params.imageContentType = "image/jpeg"
+	}
+
+	// Set content type based on output image type
+	switch options.Type {
+	case bimg.JPEG: params.imageContentType = "image/jpeg"
+	case bimg.PNG: params.imageContentType = "image/png"
+	case bimg.WEBP: params.imageContentType = "image/webp"
+	case bimg.TIFF: params.imageContentType = "image/tiff"
+	case bimg.UNKNOWN:
+		if image.Type() == "webp" {
+			params.imageContentType = "image/webp"
+		}
 	}
 
 	params.imageBody, err = image.Process(options)
@@ -41,7 +52,7 @@ func resizeImage(params *requestParams) (err error) {
 		return err
 	}
 
-	if image.Type() == "png" {
+	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
 		if err := optimizePng(params); err != nil {
 			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)
 		}

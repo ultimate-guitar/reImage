@@ -38,9 +38,9 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/reposit
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/*.apk /tmp/
 RUN apk add --allow-untrusted /tmp/*.apk && apk add --no-cache go git fftw-dev musl-dev dep
 ENV GOPATH /go
-COPY *.go ./
-COPY Gopkg.* ./
 RUN go get github.com/ultimate-guitar/go-imagequant
+COPY Gopkg.* ./
+COPY *.go ./
 RUN dep ensure
 RUN go build -o reImage *.go
 
@@ -49,11 +49,11 @@ RUN go build -o reImage *.go
 FROM alpine:edge AS release
 WORKDIR /usr/local/bin/
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-COPY --from=go /go/src/reImage/reImage .
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/mozjpeg*.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/vips*.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/lcms2*.apk /tmp/
 COPY --from=mozjpeg /home/abuild/packages/tmp/x86_64/tiff*.apk /tmp/
 RUN apk add --allow-untrusted /tmp/*.apk && apk add --no-cache ca-certificates
+COPY --from=go /go/src/reImage/reImage .
 ENV CFG_LISTEN ":7075"
 CMD ["./reImage"]

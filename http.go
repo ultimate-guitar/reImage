@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/valyala/fasthttp"
+	"gopkg.in/h2non/bimg.v1"
 	"io"
 	"io/ioutil"
 	"log"
@@ -19,6 +20,7 @@ type requestParams struct {
 	reHeight         int
 	reQuality        int
 	reCompression    int
+	reFormat         bimg.ImageType
 }
 
 var httpTransport = &http.Transport{
@@ -100,26 +102,82 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 		return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameSchema, schemaHeader)
 	}
 
-	// Parse Quality Header
-	if header := string(ctx.Request.Header.Peek(resizeHeaderNameQuality)); header == "" {
-		params.reQuality = resizeHeaderDefaultQuality
-	} else {
-		quality, err := strconv.Atoi(header)
-		if (err != nil) || quality < 0 {
-			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameQuality, header)
+	// Parse Quality Header and Args
+	{
+		if header := string(ctx.Request.Header.Peek(resizeHeaderNameQuality)[:]); header != "" {
+			quality, err := strconv.Atoi(header)
+			if (err != nil) || quality < 0 || quality > 100 {
+				return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameQuality, header)
+			}
+			params.reQuality = quality
+		} else {
+			params.reQuality = resizeHeaderDefaultQuality
 		}
-		params.reQuality = quality
+
+		qualityArg := ""
+		if ctx.QueryArgs().Has("qlt") {
+			qualityArg = string(ctx.QueryArgs().Peek("qlt")[:])
+		} else if ctx.PostArgs().Has("qlt") {
+			qualityArg = string(ctx.PostArgs().Peek("qlt")[:])
+		}
+
+		if qualityArg != "" {
+			quality, err := strconv.Atoi(qualityArg)
+			if err != nil || quality < 0 || quality > 100 {
+				return fmt.Errorf("wrong arg 'qlt' value: '%s'", qualityArg)
+			}
+			params.reQuality = quality
+		}
 	}
 
-	// Parse Compression Header
-	if header := string(ctx.Request.Header.Peek(resizeHeaderNameCompression)); header == "" {
-		params.reCompression = resizeHeaderDefaultCompression
-	} else {
-		compression, err := strconv.Atoi(header)
-		if (err != nil) || compression < 0 || compression > 9 {
-			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCompression, header)
+	// Parse Compression Header and Args
+	{
+		if header := string(ctx.Request.Header.Peek(resizeHeaderNameCompression)[:]); header != "" {
+			compression, err := strconv.Atoi(header)
+			if (err != nil) || compression < 0 || compression > 9 {
+				return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCompression, header)
+			}
+			params.reCompression = compression
+		} else {
+			params.reCompression = resizeHeaderDefaultCompression
 		}
-		params.reCompression = compression
+
+		commpressionArg := ""
+		if ctx.QueryArgs().Has("cmp") {
+			commpressionArg = string(ctx.QueryArgs().Peek("cmp")[:])
+		} else if ctx.PostArgs().Has("cmp") {
+			commpressionArg = string(ctx.PostArgs().Peek("cmp")[:])
+		}
+
+		if commpressionArg != "" {
+			compression, err := strconv.Atoi(commpressionArg)
+			if err != nil || compression < 0 || compression > 9 {
+				return fmt.Errorf("wrong arg 'cmp' value: '%s'", commpressionArg)
+			}
+			params.reCompression = compression
+		}
+	}
+	// Parse Format Args
+	{
+		formatArgs := ""
+
+		if ctx.QueryArgs().Has("fmt") {
+			formatArgs = string(ctx.QueryArgs().Peek("fmt")[:])
+		} else if ctx.PostArgs().Has("fmt") {
+			formatArgs = string(ctx.PostArgs().Peek("fmt")[:])
+		}
+
+		if formatArgs != "" {
+			switch strings.ToLower(formatArgs) {
+			case "jpeg": params.reFormat = bimg.JPEG
+			case "jpg": params.reFormat = bimg.JPEG
+			case "png": params.reFormat = bimg.PNG
+			case "webp": params.reFormat = bimg.WEBP
+			case "tiff": params.reFormat = bimg.TIFF
+			default:
+				return fmt.Errorf("wrong arg 'fmt' value: '%s'", formatArgs)
+			}
+		}
 	}
 
 	// Parse Request uri for resize params

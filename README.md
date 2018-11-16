@@ -68,7 +68,12 @@ Optional:
 * Get original image [`http://example.com/img/test.jpg`](http://example.com/img/test.jpg) (naturally it must be present on your server).
 * Get resized to 1280x720 version [`http://example.com/img/test.jpg@1280`](http://example.com/img/test.jpg@1280) (height resolution will be calculate automatically)
 * Another way: [`http://example.com/img/test.jpg@x720`](http://example.com/img/test.jpg@x720) (width resolution will be calculate automatically)
-* Get resized to 500x500 version (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500`](http://example.com/img/test.jpg@500x500)
+* Get resized to 500x500 version (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500`](http://example.com/img/test.jpg@500x500)  
+* Get resized to 500x500 version converted to webp (image will be resized and striped to 500x500 and converted to webp) [`http://example.com/img/test.jpg@500x500?fmt=webp`](http://example.com/img/test.jpg@500x500?fmt=webp). Supported formats: jpeg (or jpg), png, webp, tiff.  
+* Get resized to 500x500 version with custom compression (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500?cmp=9`](http://example.com/img/test.jpg@500x500?cmp=9). Compression value range: from 0 to 9.  
+* Get resized to 500x500 version with custom quality (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500?qlt=100`](http://example.com/img/test.jpg@500x500?qlt=100). Compression value range: from 0 to 100.  
+
+
 
 ## Benchmark
 See [benchmark Wiki page](https://github.com/ultimate-guitar/reImage/wiki/Benchmark)

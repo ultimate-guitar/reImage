@@ -10,7 +10,7 @@
   version = "v0.1.1"
 
 [[projects]]
-  digest = "1:4d0614a5d2e5e394368521b087428b2996ae95ebc4699afabc61adac9b7cec38"
+  digest = "1:064eb4d2277fb6a23944380644268b99acc0ae0576c72d0b6d7288d3c2fe4a1e"
   name = "github.com/klauspost/compress"
   packages = [
     "flate",
@@ -18,16 +18,16 @@
     "zlib",
   ]
   pruneopts = ""
-  revision = "b939724e787a27c0005cabe3f78e7ed7987ac74f"
-  version = "v1.4.0"
+  revision = "30be6041bed523c18e269a700ebd9c2ea9328574"
+  version = "v1.4.1"
 
 [[projects]]
-  digest = "1:f0117357f14b0a625ddbbe25e23637291ac0276402fcfd25fc447422456364ce"
+  digest = "1:198af4ad42013a3779477b597458f860a6a99e57e1674fa4f61eb04b8b5b768f"
   name = "github.com/klauspost/cpuid"
   packages = ["."]
   pruneopts = ""
-  revision = "ae7887de9fa5d2db4eaa8174a7eff2c1ac00f2da"
-  version = "v1.1"
+  revision = "e7e905edc00ea8827e58662220139109efea09db"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:0828677c3ebed3fc9c4f11e17e7997a733e62a3f20b38d00d70e756b681b46ab"
@@ -50,13 +50,13 @@
   version = "v20160617"
 
 [[projects]]
-  branch = "update-vips"
-  digest = "1:540ddb5432d69856f5a36302d05af0f50136c8485ba3f3c45d5553f271faf584"
+  branch = "master"
+  digest = "1:fbca9fec87307373342db4d2c071c30b1054c3e89a78a9b1c7241aea0d77b36f"
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
   pruneopts = ""
-  revision = "98902da9c798475f15d4890e2bae06ebf9b985ee"
-  source = "github.com/danpersa/bimg"
+  revision = "83dc3673df6d90772814949aae120eea83169b5e"
+  source = "github.com/h2non/bimg"
 
 [solve-meta]
   analyzer-name = "dep"

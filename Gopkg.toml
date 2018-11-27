@@ -38,5 +38,5 @@ ignored = [
 
 [[constraint]]
   name = "gopkg.in/h2non/bimg.v1"
-  source = "github.com/danpersa/bimg"
-  branch = "update-vips"
+  source = "github.com/h2non/bimg"
+  branch = "master"

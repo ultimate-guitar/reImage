@@ -51,11 +51,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:fbca9fec87307373342db4d2c071c30b1054c3e89a78a9b1c7241aea0d77b36f"
+  digest = "1:f077a4e8932012bda40b4d936850b8c7530c648f4bfdf5e645667d378f6ee584"
   name = "gopkg.in/h2non/bimg.v1"
   packages = ["."]
   pruneopts = ""
-  revision = "83dc3673df6d90772814949aae120eea83169b5e"
+  revision = "15cd11560781e3a634d3857b845d4c9c93aa454b"
   source = "github.com/h2non/bimg"
 
 [solve-meta]

@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	Listen string
+	Listen          string
 	SkipEmptyImages bool
 }
 

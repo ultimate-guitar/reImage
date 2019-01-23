@@ -37,10 +37,14 @@ func resizeImage(params *requestParams) (err error) {
 
 	// Set content type based on output image type
 	switch options.Type {
-	case bimg.JPEG: params.imageContentType = "image/jpeg"
-	case bimg.PNG: params.imageContentType = "image/png"
-	case bimg.WEBP: params.imageContentType = "image/webp"
-	case bimg.TIFF: params.imageContentType = "image/tiff"
+	case bimg.JPEG:
+		params.imageContentType = "image/jpeg"
+	case bimg.PNG:
+		params.imageContentType = "image/png"
+	case bimg.WEBP:
+		params.imageContentType = "image/webp"
+	case bimg.TIFF:
+		params.imageContentType = "image/tiff"
 	case bimg.UNKNOWN:
 		if image.Type() == "webp" {
 			params.imageContentType = "image/webp"

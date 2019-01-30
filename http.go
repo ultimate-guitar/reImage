@@ -183,7 +183,14 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 }
 
 func getSourceImage(params *requestParams) (code int, err error) {
-	res, err := httpClient.Get(params.imageUrl.String())
+	client := new(http.Client)
+	req, err := http.NewRequest("GET", params.imageUrl.String(), nil)
+	if err != nil {
+		return fasthttp.StatusInternalServerError, err
+	}
+
+	req.Header.Set("User-Agent", httpUserAgent)
+	res, err := client.Do(req)
 	if res != nil {
 		defer res.Body.Close()
 		defer io.Copy(ioutil.Discard, res.Body)

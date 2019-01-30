@@ -33,6 +33,7 @@ const (
 	resizePngSpeed                 = 3
 	resizeLibVipsInterpolator      = bimg.Bicubic
 	resizeLibVipsCacheSize         = 128 // Operations cache size. Increase it gain high perforce and high memory usage
+	httpUserAgent                  = "reImage HTTP Fetcher"
 )
 
 var config = Config{}

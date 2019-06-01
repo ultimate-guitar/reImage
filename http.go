@@ -18,9 +18,10 @@ type requestParams struct {
 	imageContentType string
 	reWidth          int
 	reHeight         int
-	reQuality        int
-	reCompression    int
-	reFormat         bimg.ImageType
+	quality          int
+	compression      int
+	format           bimg.ImageType
+	crop             bool
 }
 
 var httpTransport = &http.Transport{
@@ -83,7 +84,7 @@ func postResizeHandler(ctx *fasthttp.RequestCtx) {
 
 func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) {
 	ctx.URI().CopyTo(&params.imageUrl)
-	for _, arg := range []string{"qlt", "cmp", "fmt"} {
+	for _, arg := range []string{"qlt", "cmp", "fmt", "crop"} {
 		params.imageUrl.QueryArgs().Del(arg)
 	}
 
@@ -111,15 +112,15 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 		if err != nil || quality < 0 || quality > 100 {
 			return fmt.Errorf("wrong arg 'qlt' value: '%s'", arg)
 		}
-		params.reQuality = quality
+		params.quality = quality
 	} else if header := string(ctx.Request.Header.Peek(resizeHeaderNameQuality)[:]); header != "" {
 		quality, err := strconv.Atoi(header)
 		if (err != nil) || quality < 0 || quality > 100 {
 			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameQuality, header)
 		}
-		params.reQuality = quality
+		params.quality = quality
 	} else {
-		params.reQuality = resizeHeaderDefaultQuality
+		params.quality = resizeHeaderDefaultQuality
 	}
 
 	// Parse Compression Header and Args
@@ -129,32 +130,42 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 		if err != nil || compression < 0 || compression > 9 {
 			return fmt.Errorf("wrong arg 'cmp' value: '%s'", arg)
 		}
-		params.reCompression = compression
+		params.compression = compression
 	} else if header := string(ctx.Request.Header.Peek(resizeHeaderNameCompression)[:]); header != "" {
 		compression, err := strconv.Atoi(header)
 		if (err != nil) || compression < 0 || compression > 9 {
 			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCompression, header)
 		}
-		params.reCompression = compression
+		params.compression = compression
 	} else {
-		params.reCompression = resizeHeaderDefaultCompression
+		params.compression = resizeHeaderDefaultCompression
 	}
 
 	// Parse Format Args
 	if ctx.QueryArgs().Has("fmt") {
-		formatArgs := string(ctx.QueryArgs().Peek("fmt")[:])
-		switch strings.ToLower(formatArgs) {
+		formatArg := string(ctx.QueryArgs().Peek("fmt")[:])
+		switch strings.ToLower(formatArg) {
 		case "jpeg", "jpg":
-			params.reFormat = bimg.JPEG
+			params.format = bimg.JPEG
 		case "png":
-			params.reFormat = bimg.PNG
+			params.format = bimg.PNG
 		case "webp":
-			params.reFormat = bimg.WEBP
+			params.format = bimg.WEBP
 		case "tiff":
-			params.reFormat = bimg.TIFF
+			params.format = bimg.TIFF
 		default:
-			return fmt.Errorf("wrong arg 'fmt' value: '%s'", formatArgs)
+			return fmt.Errorf("wrong arg 'fmt' value: '%s'", formatArg)
 		}
+	}
+
+	// Parse Crop args
+	if ctx.QueryArgs().Has("crop") {
+		cropArg := string(ctx.QueryArgs().Peek("crop")[:])
+		arg, err := strconv.ParseBool(cropArg)
+		if err != nil {
+			return fmt.Errorf("wrong arg 'crop' value: '%s'", cropArg)
+		}
+		params.crop = arg
 	}
 
 	// Parse Request uri for resize params

@@ -15,19 +15,20 @@ func resizeImage(params *requestParams) (err error) {
 	options := bimg.Options{
 		Width:         params.reWidth,
 		Height:        params.reHeight,
-		Quality:       params.reQuality,
+		Quality:       params.quality,
 		Interpolator:  resizeLibVipsInterpolator,
 		StripMetadata: true,
 		NoProfile:     true,
 		Embed:         true,
-		Type:          params.reFormat,
+		Type:          params.format,
+		Crop:          params.crop,
 	}
 
 	// Special option for some image types
 	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
 		options.Compression = 0 // Image will be compressed later, on optimization step
 	} else {
-		options.Compression = params.reCompression
+		options.Compression = params.compression
 	}
 
 	if image.Type() == "gif" && options.Type == bimg.UNKNOWN {
@@ -66,7 +67,7 @@ func resizeImage(params *requestParams) (err error) {
 }
 
 func optimizePng(params *requestParams) (err error) {
-	compression, err := zlibCompressionLevelToPNG(params.reCompression)
+	compression, err := zlibCompressionLevelToPNG(params.compression)
 	if err != nil {
 		return err
 	}

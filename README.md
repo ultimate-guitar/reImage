@@ -13,13 +13,13 @@
 3. Enjoy!
 
 ## Deploy
-1. Pull docker container:  `docker pull larrabee/reimage`
-2. Run it with `docker run -d -p 7075:7075 reimage` or use docker-compose config:
+1. Pull docker container:  `docker pull larrabee/reimage:1.1.2`
+2. Run it with `docker run -d -p 7075:7075 larrabee/reimage:1.1.2` or use docker-compose config:
 ```yml
 version: '2.2'
 services:
   reImage:
-    image: larrabee/reimage
+    image: larrabee/reimage:1.1.2
     restart: always
     ports:
       - "7075:7075"  

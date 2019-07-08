@@ -24,13 +24,6 @@ type requestParams struct {
 	crop             bool
 }
 
-var httpTransport = &http.Transport{
-	MaxIdleConns:        httpClientMaxIdleConns,
-	IdleConnTimeout:     httpClientIdleConnTimeout,
-	MaxIdleConnsPerHost: httpClientMaxIdleConnsPerHost,
-}
-var httpClient = &http.Client{Transport: httpTransport, Timeout: httpClientImageDownloadTimeout}
-
 func getResizeHandler(ctx *fasthttp.RequestCtx) {
 	params := requestParams{}
 	if err := requestParser(ctx, &params); err != nil {
@@ -194,14 +187,13 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 }
 
 func getSourceImage(params *requestParams) (code int, err error) {
-	client := new(http.Client)
 	req, err := http.NewRequest("GET", params.imageUrl.String(), nil)
 	if err != nil {
 		return fasthttp.StatusInternalServerError, err
 	}
 
 	req.Header.Set("User-Agent", httpUserAgent)
-	res, err := client.Do(req)
+	res, err := httpClient.Do(req)
 	if res != nil {
 		defer res.Body.Close()
 		defer io.Copy(ioutil.Discard, res.Body)

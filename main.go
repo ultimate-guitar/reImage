@@ -7,6 +7,8 @@ import (
 	"github.com/valyala/fasthttp/reuseport"
 	"gopkg.in/h2non/bimg.v1"
 	"log"
+	"net/http"
+	"os"
 	"time"
 )
 
@@ -24,8 +26,9 @@ const (
 	resizeHeaderNameCompression    = "x-resize-compression"
 	resizeHeaderDefaultCompression = 6
 	httpClientMaxIdleConns         = 512
-	httpClientMaxIdleConnsPerHost  = 512
-	httpClientIdleConnTimeout      = 120 * time.Second
+	httpClientMaxIdleConnsPerHost  = 64
+	httpClientMaxConnsPerHost      = 128
+	httpClientIdleConnTimeout      = 30 * time.Second
 	httpClientImageDownloadTimeout = 30 * time.Second
 	serverMaxConcurrencyRequests   = 2048
 	serverRequestReadTimeout       = 10 * time.Second
@@ -36,11 +39,22 @@ const (
 	httpUserAgent                  = "reImage HTTP Fetcher"
 )
 
-var config = Config{}
+func init() {
+	parseFlags(config)
+
+	httpTransport := &http.Transport{
+		MaxIdleConns:        httpClientMaxIdleConns,
+		IdleConnTimeout:     httpClientIdleConnTimeout,
+		MaxIdleConnsPerHost: httpClientMaxIdleConnsPerHost,
+		MaxConnsPerHost:     httpClientMaxConnsPerHost,
+	}
+	httpClient = &http.Client{Transport: httpTransport, Timeout: httpClientImageDownloadTimeout}
+}
+
+var httpClient *http.Client
+var config = &Config{}
 
 func main() {
-	parseFlags()
-
 	listen, err := reuseport.Listen("tcp4", config.Listen)
 	if err != nil {
 		log.Fatalf("Error in reuseport listener: %s", err)
@@ -70,8 +84,11 @@ func getRouter() *fasthttprouter.Router {
 	return router
 }
 
-func parseFlags() {
+func parseFlags(config *Config) {
 	flag.StringVar(&config.Listen, "CFG_LISTEN", "127.0.0.1:7075", "Listen interface and port")
 	flag.BoolVar(&config.SkipEmptyImages, "CFG_SKIP_EMPTY_IMAGES", false, "Skip empty images resizing")
+	if *flag.Bool("CFG_DISABLE_HTTP2", false, "Disable HTTP2 for image downloader") == true {
+		_ = os.Setenv("GODEBUG", os.Getenv("GODEBUG")+"http2client=0")
+	}
 	flag.Parse()
 }

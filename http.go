@@ -25,6 +25,12 @@ type requestParams struct {
 }
 
 func getResizeHandler(ctx *fasthttp.RequestCtx) {
+	if string(ctx.Request.RequestURI()) == "/health" {
+		ctx.SetBody([]byte("OK"))
+		ctx.SetStatusCode(fasthttp.StatusOK)
+		return
+	}
+
 	params := requestParams{}
 	if err := requestParser(ctx, &params); err != nil {
 		log.Printf("Can not parse requested url: '%s', err: %s", ctx.URI(), err)

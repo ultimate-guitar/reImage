@@ -25,12 +25,12 @@ const (
 	resizeHeaderDefaultQuality     = 80
 	resizeHeaderNameCompression    = "x-resize-compression"
 	resizeHeaderDefaultCompression = 6
-	httpClientMaxIdleConns         = 512
-	httpClientMaxIdleConnsPerHost  = 64
+	httpClientMaxIdleConns         = 128
+	httpClientMaxIdleConnsPerHost  = 128
 	httpClientMaxConnsPerHost      = 128
 	httpClientIdleConnTimeout      = 30 * time.Second
 	httpClientImageDownloadTimeout = 30 * time.Second
-	serverMaxConcurrencyRequests   = 2048
+	serverMaxConcurrencyRequests   = 128
 	serverRequestReadTimeout       = 10 * time.Second
 	serverResponseWriteTimeout     = 20 * time.Second
 	resizePngSpeed                 = 3

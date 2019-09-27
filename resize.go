@@ -22,8 +22,6 @@ func resizeImage(params *requestParams) (err error) {
 		Embed:         true,
 		Type:          params.format,
 		Crop:          params.crop,
-		Background:    params.bgColor,
-		Extend:        bimg.ExtendBackground,
 	}
 
 	// Special option for some image types

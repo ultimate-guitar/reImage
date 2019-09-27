@@ -1,7 +1,6 @@
 package main
 
 import (
-	hex2 "encoding/hex"
 	"fmt"
 	"github.com/valyala/fasthttp"
 	"gopkg.in/h2non/bimg.v1"
@@ -23,7 +22,6 @@ type requestParams struct {
 	compression      int
 	format           bimg.ImageType
 	crop             bool
-	bgColor          bimg.Color
 }
 
 func getResizeHandler(ctx *fasthttp.RequestCtx) {
@@ -85,7 +83,7 @@ func postResizeHandler(ctx *fasthttp.RequestCtx) {
 
 func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) {
 	ctx.URI().CopyTo(&params.imageUrl)
-	for _, arg := range []string{"qlt", "cmp", "fmt", "crop", "bgclr"} {
+	for _, arg := range []string{"qlt", "cmp", "fmt", "crop"} {
 		params.imageUrl.QueryArgs().Del(arg)
 	}
 
@@ -157,19 +155,6 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 		default:
 			return fmt.Errorf("wrong arg 'fmt' value: '%s'", formatArg)
 		}
-	}
-
-	// Parse Background color Args
-	if ctx.QueryArgs().Has("bgclr") {
-		arg := strings.ToLower(string(ctx.QueryArgs().Peek("bgclr")[:]))
-		hex, err := hex2.DecodeString(arg)
-		if err != nil {
-			return fmt.Errorf("wrong arg 'bgclr' value: '%s'", arg)
-		}
-		if len(hex) != 3 {
-			return fmt.Errorf("wrong arg 'bgclr' value: '%s'", arg)
-		}
-		params.bgColor = bimg.Color{R: hex[0], G: hex[1], B: hex[2]}
 	}
 
 	// Parse Crop args

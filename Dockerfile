@@ -4,31 +4,36 @@ RUN apk add --no-cache alpine-sdk nasm autoconf automake libtool pkgconfig
 RUN adduser -s /bin/sh -D -G abuild abuild
 RUN echo "%abuild ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/abuild
 USER abuild
+ENV ABUILD_LAST_COMMIT "1"
+ENV SOURCE_DATE_EPOCH "1"
 RUN abuild-keygen -a -i -n -q
 
 # Buildind mozjpeg and installing it
 WORKDIR /tmp/mozjpeg
 COPY --chown=abuild:abuild alpine/mozjpeg/APKBUILD ./
 RUN sudo chown abuild:abuild ./
-RUN abuild -r -i || abuild -r -i
+RUN abuild -r
+RUN sudo apk add --allow-untrusted /home/abuild/packages/tmp/x86_64/*.apk
 
 # Building tiff and installing it
 WORKDIR /tmp/tiff
 COPY --chown=abuild:abuild alpine/tiff/* ./
 RUN sudo chown abuild:abuild ./
-RUN abuild -r -i || abuild -r -i
+RUN abuild -r
+RUN sudo apk add --allow-untrusted /home/abuild/packages/tmp/x86_64/*.apk
 
 # Building lcms2 and installing it
 WORKDIR /tmp/lcms2
 COPY --chown=abuild:abuild alpine/lcms2/* ./
 RUN sudo chown abuild:abuild ./
-RUN abuild -r -i || abuild -r -i
+RUN abuild -r
+RUN sudo apk add --allow-untrusted /home/abuild/packages/tmp/x86_64/*.apk
 
 # Building libvips
 WORKDIR /tmp/vips
 COPY --chown=abuild:abuild alpine/vips/APKBUILD ./
 RUN sudo chown abuild:abuild ./
-RUN abuild -r || abuild -r
+RUN abuild -r
 
 
 # Building reImage

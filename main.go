@@ -61,8 +61,8 @@ func main() {
 	router := getRouter()
 
 	server := &fasthttp.Server{
-		Handler:          router.Handler,
-		Concurrency:      serverMaxConcurrencyRequests,
+		Handler:     router.Handler,
+		Concurrency: serverMaxConcurrencyRequests,
 	}
 
 	log.Printf("Server started on %s\n", config.Listen)

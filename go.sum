@@ -11,6 +11,10 @@ github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e/go.mod h1:Pj4uuM52
 github.com/klauspost/cpuid v1.2.1 h1:vJi+O/nMdFt0vqm8NZBI6wzALWdA2X+egi0ogNyrC/w=
 github.com/klauspost/cpuid v1.2.1/go.mod h1:Pj4uuM528wm8OyEC2QMXAi2YiTZ96dNQPGgoMS4s3ek=
 github.com/klauspost/cpuid v1.2.2/go.mod h1:Pj4uuM528wm8OyEC2QMXAi2YiTZ96dNQPGgoMS4s3ek=
+github.com/larrabee/bimg v1.0.19 h1:SRg/9hSUiRoWlDnuNOQf1OyAsf2KV4QqCBY89eC/5iA=
+github.com/larrabee/bimg v1.0.19/go.mod h1:80p2KPjUe2wMloWDemkjVZew1ecdoQKU3Uw8k7aGbo4=
+github.com/larrabee/bimg v1.0.20-0.20200116121630-9e85c8daa193 h1:+xmKIdtM46CZCQwlNBDLrFo4+v9w6wOYHBVf6pikkLY=
+github.com/larrabee/bimg v1.0.20-0.20200116121630-9e85c8daa193/go.mod h1:80p2KPjUe2wMloWDemkjVZew1ecdoQKU3Uw8k7aGbo4=
 github.com/namsral/flag v1.7.4-pre h1:b2ScHhoCUkbsq0d2C15Mv+VU8bl8hAXV8arnWiOHNZs=
 github.com/namsral/flag v1.7.4-pre/go.mod h1:OXldTctbM6SWH1K899kPZcf65KxJiD7MsceFUpB5yDo=
 github.com/ultimate-guitar/go-imagequant v0.0.0-20190607123503-150c56b8377c h1:FgHl1deapF/njCwnqyJB7K+aV15O1kUQsOa7xY8zSUc=

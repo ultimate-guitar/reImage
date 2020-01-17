@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -39,6 +40,7 @@ func getResizeHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusBadRequest)
 		return
 	}
+
 	if code, err := getSourceImage(&params); err != nil {
 		log.Printf("Can not get source image: '%s', err: %s", params.imageUrl.String(), err)
 		ctx.SetStatusCode(code)
@@ -180,6 +182,15 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 			return fmt.Errorf("wrong arg 'bgclr' value: '%s'", arg)
 		}
 		params.bgColor = bimg.Color{R: hex[0], G: hex[1], B: hex[2]}
+	} else {
+		// Hack for Musescore
+		re, err := regexp.Compile("/musescore/scoredata/gen/(.*)/score_([0-9]+).png")
+		if err != nil {
+			return err
+		}
+		if re.Match(ctx.URI().Path()) && !params.imageUrl.QueryArgs().Has("nb") {
+				params.bgColor = bimg.Color{R:255, G:255, B:255}
+		}
 	}
 
 	// Parse Request uri for resize params

@@ -13,13 +13,13 @@
 3. Enjoy!
 
 ## Deploy
-1. Pull docker container:  `docker pull larrabee/reimage:1.1.2`
-2. Run it with `docker run -d -p 7075:7075 larrabee/reimage:1.1.2` or use docker-compose config:
+1. Pull docker container:  `docker pull larrabee/reimage:1.2.5`
+2. Run it with `docker run -d -p 7075:7075 larrabee/reimage:1.2.5` or use docker-compose config:
 ```yml
 version: '2.2'
 services:
   reImage:
-    image: larrabee/reimage:1.1.2
+    image: larrabee/reimage:1.2.5
     restart: always
     ports:
       - "7075:7075"  
@@ -72,7 +72,7 @@ Optional:
 * Get resized to 500x500 version converted to webp (image will be resized and striped to 500x500 and converted to webp) [`http://example.com/img/test.jpg@500x500?fmt=webp`](http://example.com/img/test.jpg@500x500?fmt=webp). Supported formats: jpeg (or jpg), png, webp, tiff.  
 * Get resized to 500x500 version with custom compression (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500?cmp=9`](http://example.com/img/test.jpg@500x500?cmp=9). Compression value range: from 0 to 9.  
 * Get resized to 500x500 version with custom quality (image will be resized and striped to 500x500) [`http://example.com/img/test.jpg@500x500?qlt=100`](http://example.com/img/test.jpg@500x500?qlt=100). Quality value range: from 0 to 100.  
-
+* Get resized to 500x500 version with custom background color [`http://example.com/img/test.jpg@500x500?bgclr=003cfa`](http://example.com/img/test.jpg@500x500?qlt=100). Format: RGB in HEX encoding, like "ffffff" for white. Default: "000000" for none.
 
 
 ## Benchmark

@@ -1,44 +1,51 @@
 # Contributor: larrabee <kafatron@gmail.com>
 # Maintainer: larrabee <kafatron@gmail.com>
 pkgname=mozjpeg
-pkgver=3.3.1
+pkgver=4.0.0
 pkgrel=0
 pkgdesc="accelerated baseline JPEG compression and decompression library based on libjpeg-turbo"
 url="https://github.com/mozilla/mozjpeg"
 arch="all"
 license="IJG"
-depends=""
-makedepends="nasm pkgconfig autoconf automake libtool"
+depends="libpng"
+makedepends="nasm cmake libpng-dev"
 replaces="libjpeg libjpeg-turbo"
 subpackages="$pkgname-doc $pkgname-dev $pkgname-utils"
 source="$pkgname-$pkgver.tar.gz::https://github.com/mozilla/mozjpeg/archive/v$pkgver.tar.gz"
 
 builddir="$srcdir/$pkgname-$pkgver"
+options="!check"
 
 build() {
-	cd "$builddir"
-        autoreconf -fiv
-	./configure \
-		--build=$CBUILD \
-		--host=$CHOST \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--mandir=/usr/share/man \
-		--infodir=/usr/share/info \
-		--localstatedir=/var \
-		--with-jpeg8
+	local _floattest=
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	case "$CARCH" in
+		ppc64le) export JSIMD_FORCENONE=1;;
+		s390x) _floattest="-DFLOATTEST=fp-contract";;
+	esac
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DWITH_JPEG8=1 \
+		-DENABLE_STATIC=0 \
+		$_floattest \
+		$CMAKE_CROSSOPTS
 	make
 }
 
-#check() {
-#	cd "$builddir"
-#	make test
-#}
+check() {
+	make test
+}
 
 package() {
-	cd "$builddir"
-	make -j1 DESTDIR="$pkgdir" docdir=/usr/share/doc/$pkgname \
-		install
+	make -j1 DESTDIR="$pkgdir" install
+	install -d "$pkgdir"/usr/share/licenses/$pkgname
+	ln -s ../../doc/libjpeg-turbo/LICENSE.md "$pkgdir/usr/share/licenses/$pkgname"
 }
 
 utils() {
@@ -58,4 +65,4 @@ dev() {
 	replaces="jpeg-dev libjpeg-turbo-dev"
 }
 
-sha512sums="d2671fe161b7178e7493476c18ca251707b7c47f973c27c3e8930f82bcb5a416af42826a6d78616234a4c71e342f6da068c4cc9cc97cc035a7d2cffcbe71e44f  mozjpeg-3.3.1.tar.gz"
+sha512sums="1545c10e9e0f960e73db1a940ee7dc25c5ade3b848b3be74baf28aa11a3d9255f7f4442e769e31c7d71db087c2c187a469a9a59545a28e6b1ba3489a54b3716f  mozjpeg-$pkgver.tar.gz"

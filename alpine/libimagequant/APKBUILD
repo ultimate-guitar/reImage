@@ -1,0 +1,28 @@
+# Contributor: larrabee <kafatron@gmail.com>
+# Maintainer: larrabee <kafatron@gmail.com>
+pkgname=libimagequant
+pkgver=2.13.1
+pkgrel=0
+pkgdesc="Small, portable C library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images"
+url="https://github.com/ImageOptim/libimagequant"
+arch="all"
+license="GPLv3"
+depends=""
+makedepends="make gcc bash"
+subpackages="$pkgname-dev"
+# source="$pkgname-$pkgver.tar.gz::https://github.com/ImageOptim/libimagequant/archive/$pkgver.tar.gz"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ImageOptim/libimagequant/archive/e8b944c34889cccc2d3c14db9c0b0cd4651d6dd4.tar.gz"
+
+builddir="$srcdir/$pkgname-e8b944c34889cccc2d3c14db9c0b0cd4651d6dd4"
+
+build() {
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+sha512sums="abd5440e2b4cecedce59931ec81065df7fce98d9e2ba4b21694988dab0e7b5eb511929cb2ae00485bb49e56262d4e66b52ec9d5dcb55617cdc7f4f4ee4625d49  $pkgname-$pkgver.tar.gz"

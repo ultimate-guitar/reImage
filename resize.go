@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/h2non/bimg"
 	"github.com/ultimate-guitar/go-imagequant"
-	"gopkg.in/h2non/bimg.v1"
 	"image/png"
 	"log"
 )

@@ -3,8 +3,8 @@ package main
 import (
 	hex2 "encoding/hex"
 	"fmt"
+	"github.com/h2non/bimg"
 	"github.com/valyala/fasthttp"
-	"gopkg.in/h2non/bimg.v1"
 	"io"
 	"io/ioutil"
 	"log"

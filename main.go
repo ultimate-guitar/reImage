@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/buaazp/fasthttprouter"
+	"github.com/h2non/bimg"
 	"github.com/namsral/flag"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/reuseport"
-	"gopkg.in/h2non/bimg.v1"
 	"log"
 	"net/http"
 	"os"

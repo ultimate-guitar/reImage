@@ -2,7 +2,7 @@
 # Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
 # Maintainer: Michael Mason <ms13sp@gmail.com>
 pkgname=tiff
-pkgver=4.1.0
+pkgver=4.2.0
 pkgrel=0
 pkgdesc="Provides support for the Tag Image File Format or TIFF"
 url="http://www.libtiff.org"
@@ -12,56 +12,17 @@ depends_dev="zlib-dev mozjpeg-dev"
 makedepends="libtool autoconf automake $depends_dev"
 checkdepends="diffutils"
 subpackages="$pkgname-doc $pkgname-dev $pkgname-tools libtiffxx:_libtiffxx"
-source="http://download.osgeo.org/libtiff/tiff-$pkgver.tar.gz
+source="https://gitlab.com/libtiff/libtiff/-/archive/v$pkgver/libtiff-v$pkgver.tar.gz
 	CVE-2018-12900.patch
 	"
+builddir="$srcdir/libtiff-v$pkgver"
 
-# secfixes:
-#   4.0.10-r2:
-#     - CVE-2019-10927
-#   4.0.10-r1:
-#     - CVE-2019-14973
-#   4.0.10-r0:
-#     - CVE-2018-12900
-#     - CVE-2018-18557
-#     - CVE-2018-18661
-#   4.0.9-r8:
-#     - CVE-2018-10779
-#     - CVE-2018-17100
-#     - CVE-2018-17101
-#   4.0.9-r6:
-#     - CVE-2017-9935
-#     - CVE-2017-11613
-#     - CVE-2017-17095
-#     - CVE-2018-10963
-#   4.0.9-r5:
-#     - CVE-2018-8905
-#   4.0.9-r4:
-#     - CVE-2018-7456
-#   4.0.9-r2:
-#     - CVE-2018-5784
-#   4.0.9-r1:
-#     - CVE-2017-18013
-#   4.0.9-r0:
-#     - CVE-2017-16231
-#     - CVE-2017-16232
-#   4.0.8-r1:
-#     - CVE-2017-9936
-#     - CVE-2017-10688
-#   4.0.7-r2:
-#     - CVE-2017-7592
-#     - CVE-2017-7593
-#     - CVE-2017-7594
-#     - CVE-2017-7595
-#     - CVE-2017-7596
-#     - CVE-2017-7598
-#     - CVE-2017-7601
-#     - CVE-2017-7602
-#   4.0.7-r1:
-#     - CVE-2017-5225
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
 
 build() {
-	cd "$builddir"
 	./configure \
 		--build=$CBUILD \
 		--host=$CHOST \
@@ -74,12 +35,10 @@ build() {
 }
 
 check() {
-	cd "$builddir"
 	make check
 }
 
 package() {
-	cd "$builddir"
 	make DESTDIR="$pkgdir" install
 }
 
@@ -95,5 +54,5 @@ tools() {
 	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
 }
 
-sha512sums="fd541dcb11e3d5afaa1ec2f073c9497099727a52f626b338ef87dc93ca2e23ca5f47634015a4beac616d4e8f05acf7b7cd5797fb218758cc2ad31b390491c5a6  tiff-4.1.0.tar.gz
+sha512sums="d47578feffcc1ecdac2d188c1df4faf05865cd9075b4d01c708a0e71928cce3b60850738a6b7ace334ae00e96ccffc6189ed91b9be81840a1d2b040777010dd5  libtiff-v4.2.0.tar.gz
 c321f1d4e5d334cdb3b0800299e8165055c040c0c030220769ccfdadcc7fd35a0f3231115f44dc86fe5e34f32eafe1074aa85495a744717f8fc10c0cab2ab085  CVE-2018-12900.patch"

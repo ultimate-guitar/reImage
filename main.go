@@ -31,6 +31,7 @@ const (
 	httpClientIdleConnTimeout      = 30 * time.Second
 	httpClientImageDownloadTimeout = 30 * time.Second
 	serverMaxConcurrencyRequests   = 128
+	serverBufferSize               = 8192
 	resizePngSpeed                 = 3
 	resizeLibVipsInterpolator      = bimg.Bicubic
 	resizeLibVipsCacheSize         = 128 // Operations cache size. Increase it gain high perforce and high memory usage
@@ -61,6 +62,8 @@ func main() {
 	router := getRouter()
 
 	server := &fasthttp.Server{
+		ReadBufferSize: serverBufferSize,
+		WriteBufferSize: serverBufferSize,
 		Handler:     router.Handler,
 		Concurrency: serverMaxConcurrencyRequests,
 	}

@@ -24,13 +24,12 @@ func resizeImage(params *requestParams) (err error) {
 		Crop:          params.crop,
 		Background:    params.bgColor,
 		Extend:        bimg.ExtendBackground,
+		Compression:   params.compression,
 	}
 
 	// Special option for some image types
 	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
 		options.Compression = 0 // Image will be compressed later, on optimization step
-	} else {
-		options.Compression = params.compression
 	}
 
 	if image.Type() == "gif" && options.Type == bimg.UNKNOWN {

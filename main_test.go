@@ -41,23 +41,23 @@ type testImage struct {
 func TestResizeImage(t *testing.T) {
 	//runProfiler()
 	var testSetGood = []testImage{
-		testImage{requestParams{reWidth: 1280, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
-		testImage{requestParams{reWidth: 1280, reHeight: 0, quality: 100, compression: 9}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
-		testImage{requestParams{reWidth: 0, reHeight: 1488, quality: 80, compression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
-		testImage{requestParams{reWidth: 0, reHeight: 1488, quality: 60, compression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
-		testImage{requestParams{reWidth: 427, reHeight: 284, quality: 80, compression: 6}, []string{"samples", "jpeg", "clock_1280x853.jpg"}},
-		testImage{requestParams{reWidth: 0, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
-		testImage{requestParams{reWidth: 0, reHeight: 0, quality: 80, compression: 9}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
-		testImage{requestParams{reWidth: 720, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "fireworks_1920x1280.jpg"}},
-		testImage{requestParams{reWidth: 128, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "fireworks_640x426.jpg"}},
-		testImage{requestParams{reWidth: 1600, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "owl_2048x1500.jpg"}},
-		testImage{requestParams{reWidth: 575, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "owl_640x468.jpg"}},
-		testImage{requestParams{reWidth: 1750, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "cc_705x453.png"}},
-		testImage{requestParams{reWidth: 0, reHeight: 1080, quality: 80, compression: 6}, []string{"samples", "png", "istanbul_3993x2311.png"}},
-		testImage{requestParams{reWidth: 500, reHeight: 500, quality: 80, compression: 6}, []string{"samples", "png", "penguin_1138x2378.png"}},
-		testImage{requestParams{reWidth: 50, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "penguin_380x793.png"}},
-		testImage{requestParams{reWidth: 640, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "wine_2400x2400.png"}},
-		testImage{requestParams{reWidth: 640, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "wine_800x800.png"}},
+		{requestParams{reWidth: 1280, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
+		{requestParams{reWidth: 1280, reHeight: 0, quality: 100, compression: 9}, []string{"samples", "jpeg", "bird_1920x1279.jpg"}},
+		{requestParams{reWidth: 0, reHeight: 1488, quality: 80, compression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
+		{requestParams{reWidth: 0, reHeight: 1488, quality: 60, compression: 6}, []string{"samples", "jpeg", "bird_4466x2977.jpg"}},
+		{requestParams{reWidth: 427, reHeight: 284, quality: 80, compression: 6}, []string{"samples", "jpeg", "clock_1280x853.jpg"}},
+		{requestParams{reWidth: 0, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
+		{requestParams{reWidth: 0, reHeight: 0, quality: 80, compression: 9}, []string{"samples", "jpeg", "clock_6000x4000.jpg"}},
+		{requestParams{reWidth: 720, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "fireworks_1920x1280.jpg"}},
+		{requestParams{reWidth: 128, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "fireworks_640x426.jpg"}},
+		{requestParams{reWidth: 1600, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "owl_2048x1500.jpg"}},
+		{requestParams{reWidth: 575, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "jpeg", "owl_640x468.jpg"}},
+		{requestParams{reWidth: 1750, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "cc_705x453.png"}},
+		{requestParams{reWidth: 0, reHeight: 1080, quality: 80, compression: 6}, []string{"samples", "png", "istanbul_3993x2311.png"}},
+		{requestParams{reWidth: 500, reHeight: 500, quality: 80, compression: 6}, []string{"samples", "png", "penguin_1138x2378.png"}},
+		{requestParams{reWidth: 50, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "penguin_380x793.png"}},
+		{requestParams{reWidth: 640, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "wine_2400x2400.png"}},
+		{requestParams{reWidth: 640, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "png", "wine_800x800.png"}},
 	}
 
 	fmt.Println("Test good images:")
@@ -89,30 +89,30 @@ func TestResizeImage(t *testing.T) {
 	}
 
 	var testSetBroken = []testImage{
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-1.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-2.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-3.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-4.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-5.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-6.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-7.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-8.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-9.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-10.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-11.jpg"}},
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xc1n0g08.png"}}, //color type 1
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xc9n2c08.png"}}, //color type 9
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xcrn0g04.png"}}, //added cr bytes
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd0n2c08.png"}}, //bit-depth 0
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd3n2c08.png"}}, //bit-depth 3
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd9n2c08.png"}}, //bit-depth 99
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xdtn0g01.png"}}, //missing IDAT chunk
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xhdn0g08.png"}}, //incorrect IHDR checksum
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xlfn0g04.png"}}, //added lf bytes
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs1n0g01.png"}}, //signature byte 1 MSBit reset to zero
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs2n0g01.png"}}, //signature byte 2 is a 'Q'
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs4n0g01.png"}}, //signature byte 4 lowercase
-		testImage{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs7n0g01.png"}}, //7th byte a space instead of control-Z
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-1.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-2.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-3.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-4.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-5.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-6.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-7.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-8.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-9.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-10.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "corrupted-11.jpg"}},
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xc1n0g08.png"}}, //color type 1
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xc9n2c08.png"}}, //color type 9
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xcrn0g04.png"}}, //added cr bytes
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd0n2c08.png"}}, //bit-depth 0
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd3n2c08.png"}}, //bit-depth 3
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xd9n2c08.png"}}, //bit-depth 99
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xdtn0g01.png"}}, //missing IDAT chunk
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xhdn0g08.png"}}, //incorrect IHDR checksum
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xlfn0g04.png"}}, //added lf bytes
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs1n0g01.png"}}, //signature byte 1 MSBit reset to zero
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs2n0g01.png"}}, //signature byte 2 is a 'Q'
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs4n0g01.png"}}, //signature byte 4 lowercase
+		{requestParams{reWidth: 10, reHeight: 0, quality: 80, compression: 6}, []string{"samples", "broken", "xs7n0g01.png"}}, //7th byte a space instead of control-Z
 	}
 
 	fmt.Println("\n\nTest bad images:")

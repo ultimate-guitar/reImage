@@ -4,17 +4,17 @@ import (
 	hex2 "encoding/hex"
 	"fmt"
 	"github.com/h2non/bimg"
-	"github.com/valyala/fasthttp"
+	"github.com/labstack/echo/v4"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
 
 type requestParams struct {
-	imageUrl         fasthttp.URI
+	imageUrl         *url.URL
 	imageBody        []byte
 	imageContentType string
 	reWidth          int
@@ -26,95 +26,85 @@ type requestParams struct {
 	bgColor          bimg.Color
 }
 
-func getResizeHandler(ctx *fasthttp.RequestCtx) {
-	if string(ctx.Request.RequestURI()) == "/health" {
-		ctx.SetBody([]byte("OK"))
-		ctx.SetStatusCode(fasthttp.StatusOK)
-		return
-	}
+func healthHandler(c echo.Context) error {
+	return c.String(http.StatusOK, "OK")
+}
 
+func getResizeHandler(c echo.Context) error {
 	params := requestParams{}
-	if err := requestParser(ctx, &params); err != nil {
-		log.Printf("Can not parse requested url: '%s', err: %s", ctx.URI(), err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
-		return
+	if err := requestParser(c.Request(), &params); err != nil {
+		c.Logger().Errorf("Can not parse requested url: '%s', err: %s", c.Request().URL.String(), err)
+		return c.String(http.StatusBadRequest, "")
 	}
 	if code, err := getSourceImage(&params); err != nil {
-		log.Printf("Can not get source image: '%s', err: %s", params.imageUrl.String(), err)
-		ctx.SetStatusCode(code)
-		return
+		c.Logger().Errorf("Can not get source image: '%s', err: %s", params.imageUrl.String(), err)
+		return c.String(code, "")
 	}
 
 	if config.SkipEmptyImages && len(params.imageBody) == 0 {
-		log.Printf("Empty images skipped: %s", params.imageUrl.String())
-		ctx.SetContentType(params.imageContentType)
-		ctx.SetStatusCode(fasthttp.StatusOK)
-		return
+		c.Logger().Warnf("Empty images skipped: %s", params.imageUrl.String())
+		return c.Blob(http.StatusOK, params.imageContentType, nil)
 	}
 
 	if err := resizeImage(&params); err != nil {
-		log.Printf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		return
+		c.Logger().Errorf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
+		return c.String(http.StatusInternalServerError, "")
 	}
-	ctx.SetBody(params.imageBody)
-	ctx.SetContentType(params.imageContentType)
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	return
+
+	return c.Blob(http.StatusOK, params.imageContentType, params.imageBody)
 }
 
-func postResizeHandler(ctx *fasthttp.RequestCtx) {
-	params := requestParams{imageBody: ctx.PostBody()}
-	if err := requestParser(ctx, &params); err != nil {
-		log.Printf("Can not parse requested url: '%s', err: %s", ctx.URI(), err)
-		ctx.SetStatusCode(fasthttp.StatusBadRequest)
-		return
+func postResizeHandler(c echo.Context) error {
+	body, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		c.Logger().Errorf("Failed to read POST body, err: %s", err)
+		return c.String(http.StatusInternalServerError, "")
+	}
+	params := requestParams{imageBody: body}
+	if err := requestParser(c.Request(), &params); err != nil {
+		c.Logger().Errorf("Can not parse requested url: '%s', err: %s", c.Request().URL.String(), err)
+		return c.String(http.StatusBadRequest, "")
 	}
 
 	if err := resizeImage(&params); err != nil {
-		log.Printf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
-		ctx.SetStatusCode(fasthttp.StatusInternalServerError)
-		return
+		c.Logger().Errorf("Can not resize image: '%s', err: %s", params.imageUrl.String(), err)
+		return c.String(http.StatusInternalServerError, "")
 	}
 
-	ctx.SetBody(params.imageBody)
-	ctx.SetContentType(params.imageContentType)
-	ctx.SetStatusCode(fasthttp.StatusOK)
-	return
+	return c.Blob(http.StatusOK, params.imageContentType, params.imageBody)
 }
 
-func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) {
-	ctx.URI().CopyTo(&params.imageUrl)
+func requestParser(req *http.Request, params *requestParams) (err error) {
+	params.imageUrl, _ = url.Parse(req.URL.String())
+	args := params.imageUrl.Query()
 	for _, arg := range []string{"qlt", "cmp", "fmt", "crop", "bgclr"} {
-		params.imageUrl.QueryArgs().Del(arg)
+		args.Del(arg)
 	}
+	params.imageUrl.RawQuery = args.Encode()
 
-	if sourceHeader := string(ctx.Request.Header.Peek(resizeHeaderNameSource)); ctx.IsGet() && sourceHeader == "" {
+	if sourceHeader := req.Header.Get(resizeHeaderNameSource); req.Method == "GET" && sourceHeader == "" {
 		return fmt.Errorf("empty '%s' header on GET request", resizeHeaderNameSource)
 	} else {
-		params.imageUrl.SetHost(sourceHeader)
+		params.imageUrl.Host = sourceHeader
 	}
 
-	switch schemaHeader := string(ctx.Request.Header.Peek(resizeHeaderNameSchema)); schemaHeader {
+	switch schemaHeader := strings.ToLower(req.Header.Get(resizeHeaderNameSchema)); schemaHeader {
 	case "":
-		params.imageUrl.SetScheme(resizeHeaderDefaultSchema)
-	case "https":
-		params.imageUrl.SetScheme("https")
-	case "http":
-		params.imageUrl.SetScheme("http")
+		params.imageUrl.Scheme = resizeHeaderDefaultSchema
+	case "https", "http":
+		params.imageUrl.Scheme = schemaHeader
 	default:
 		return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameSchema, schemaHeader)
 	}
 
 	// Parse Quality Header and Args
-	if ctx.URI().QueryArgs().Has("qlt") {
-		arg := string(ctx.QueryArgs().Peek("qlt")[:])
+	if arg := req.URL.Query().Get("qlt"); arg != "" {
 		quality, err := strconv.Atoi(arg)
 		if err != nil || quality < 0 || quality > 100 {
 			return fmt.Errorf("wrong arg 'qlt' value: '%s'", arg)
 		}
 		params.quality = quality
-	} else if header := string(ctx.Request.Header.Peek(resizeHeaderNameQuality)[:]); header != "" {
+	} else if header := req.Header.Get(resizeHeaderNameQuality); header != "" {
 		quality, err := strconv.Atoi(header)
 		if (err != nil) || quality < 0 || quality > 100 {
 			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameQuality, header)
@@ -125,14 +115,13 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 	}
 
 	// Parse Compression Header and Args
-	if ctx.URI().QueryArgs().Has("cmp") {
-		arg := string(ctx.QueryArgs().Peek("cmp")[:])
+	if arg := req.URL.Query().Get("cmp"); arg != "" {
 		compression, err := strconv.Atoi(arg)
 		if err != nil || compression < 0 || compression > 9 {
 			return fmt.Errorf("wrong arg 'cmp' value: '%s'", arg)
 		}
 		params.compression = compression
-	} else if header := string(ctx.Request.Header.Peek(resizeHeaderNameCompression)[:]); header != "" {
+	} else if header := req.Header.Get(resizeHeaderNameCompression); header != "" {
 		compression, err := strconv.Atoi(header)
 		if (err != nil) || compression < 0 || compression > 9 {
 			return fmt.Errorf("wrong '%s' header value: '%s'", resizeHeaderNameCompression, header)
@@ -143,9 +132,8 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 	}
 
 	// Parse Format Args
-	if ctx.QueryArgs().Has("fmt") {
-		formatArg := string(ctx.QueryArgs().Peek("fmt")[:])
-		switch strings.ToLower(formatArg) {
+	if arg := req.URL.Query().Get("fmt"); arg != "" {
+		switch strings.ToLower(arg) {
 		case "jpeg", "jpg":
 			params.format = bimg.JPEG
 		case "png":
@@ -155,23 +143,21 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 		case "tiff":
 			params.format = bimg.TIFF
 		default:
-			return fmt.Errorf("wrong arg 'fmt' value: '%s'", formatArg)
+			return fmt.Errorf("wrong arg 'fmt' value: '%s'", arg)
 		}
 	}
 
 	// Parse Crop args
-	if ctx.QueryArgs().Has("crop") {
-		cropArg := string(ctx.QueryArgs().Peek("crop")[:])
-		arg, err := strconv.ParseBool(cropArg)
+	if arg := req.URL.Query().Get("crop"); arg != "" {
+		arg, err := strconv.ParseBool(arg)
 		if err != nil {
-			return fmt.Errorf("wrong arg 'crop' value: '%s'", cropArg)
+			return fmt.Errorf("wrong arg 'crop' value: '%s'", arg)
 		}
 		params.crop = arg
 	}
 
 	// Parse Background color Args
-	if ctx.QueryArgs().Has("bgclr") {
-		arg := strings.ToLower(string(ctx.QueryArgs().Peek("bgclr")[:]))
+	if arg := req.URL.Query().Get("bgclr"); arg != "" {
 		hex, err := hex2.DecodeString(arg)
 		if err != nil {
 			return fmt.Errorf("wrong arg 'bgclr' value: '%s'", arg)
@@ -184,9 +170,9 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 
 	// Parse Request uri for resize params
 	{
-		splitedPath := strings.Split(string(ctx.URI().Path()), "@")
+		splitedPath := strings.Split(string(req.URL.Path), "@")
 		resizeArgs := strings.Split(strings.ToLower(splitedPath[len(splitedPath)-1]), "x")
-		params.imageUrl.SetPath(strings.Join(splitedPath[:len(splitedPath)-1], "@"))
+		params.imageUrl.Path = strings.Join(splitedPath[:len(splitedPath)-1], "@")
 		if resizeArgs[0] != "" {
 			if params.reWidth, err = strconv.Atoi(resizeArgs[0]); err != nil {
 				return fmt.Errorf("reWidth value '%s' parsing error: %s", resizeArgs[0], err)
@@ -210,7 +196,7 @@ func requestParser(ctx *fasthttp.RequestCtx, params *requestParams) (err error) 
 func getSourceImage(params *requestParams) (code int, err error) {
 	req, err := http.NewRequest("GET", params.imageUrl.String(), nil)
 	if err != nil {
-		return fasthttp.StatusInternalServerError, err
+		return http.StatusInternalServerError, err
 	}
 
 	req.Header.Set("User-Agent", httpUserAgent)
@@ -220,16 +206,16 @@ func getSourceImage(params *requestParams) (code int, err error) {
 		defer io.Copy(ioutil.Discard, res.Body)
 	}
 	if err != nil {
-		return fasthttp.StatusInternalServerError, err
+		return http.StatusInternalServerError, err
 	}
 
-	if res.StatusCode != fasthttp.StatusOK {
-		return res.StatusCode, fmt.Errorf("status code %d != %d", res.StatusCode, fasthttp.StatusOK)
+	if res.StatusCode != http.StatusOK {
+		return res.StatusCode, fmt.Errorf("status code %d != %d", res.StatusCode, http.StatusOK)
 	}
 
 	params.imageBody, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		return fasthttp.StatusInternalServerError, err
+		return http.StatusInternalServerError, err
 	}
 	params.imageContentType = res.Header.Get("content-type")
 	return res.StatusCode, nil

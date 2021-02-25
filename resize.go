@@ -8,6 +8,14 @@ import (
 	"log"
 )
 
+const (
+	ContentTypeJPEG = "image/jpeg"
+	ContentTypePNG  = "image/png"
+	ContentTypeWEBP = "image/webp"
+	ContentTypeTIFF = "image/tiff"
+	ContentTypeGIF  = "image/gif"
+)
+
 func resizeImage(params *requestParams) (err error) {
 	bimg.VipsCacheSetMax(resizeLibVipsCacheSize)
 	image := bimg.NewImage(params.imageBody)
@@ -27,29 +35,35 @@ func resizeImage(params *requestParams) (err error) {
 		Compression:   params.compression,
 	}
 
-	// Special option for some image types
-	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
-		options.Compression = 0 // Image will be compressed later, on optimization step
-	}
 
-	if image.Type() == "gif" && options.Type == bimg.UNKNOWN {
-		options.Type = bimg.JPEG
-		params.imageContentType = "image/jpeg"
-	}
-
-	// Set content type based on output image type
+	pngOptimisationNeeded := false
+	// Set content type and convert options based on output image type
 	switch options.Type {
 	case bimg.JPEG:
-		params.imageContentType = "image/jpeg"
+		params.imageContentType = ContentTypeJPEG
 	case bimg.PNG:
-		params.imageContentType = "image/png"
+		params.imageContentType = ContentTypePNG
+		options.Compression = 0 // Image will be compressed later, on optimization step
+		pngOptimisationNeeded = true
 	case bimg.WEBP:
-		params.imageContentType = "image/webp"
+		params.imageContentType = ContentTypeWEBP
 	case bimg.TIFF:
-		params.imageContentType = "image/tiff"
+		params.imageContentType = ContentTypeTIFF
 	case bimg.UNKNOWN:
-		if image.Type() == "webp" {
-			params.imageContentType = "image/webp"
+		switch bimg.DetermineImageType(params.imageBody) {
+		case bimg.JPEG:
+			params.imageContentType = ContentTypeJPEG
+		case bimg.PNG:
+			params.imageContentType = ContentTypePNG
+			options.Compression = 0 // Image will be compressed later, on optimization step
+			pngOptimisationNeeded = true
+		case bimg.WEBP:
+			params.imageContentType = ContentTypeWEBP
+		case bimg.TIFF:
+			params.imageContentType = ContentTypeTIFF
+		case bimg.GIF:
+			params.imageContentType = ContentTypeJPEG
+			options.Type = bimg.JPEG
 		}
 	}
 
@@ -58,7 +72,7 @@ func resizeImage(params *requestParams) (err error) {
 		return err
 	}
 
-	if options.Type == bimg.PNG || (options.Type == bimg.UNKNOWN && image.Type() == "png") {
+	if pngOptimisationNeeded {
 		if err := optimizePng(params); err != nil {
 			log.Printf("Can not optimize png image: '%s', err: %s", params.imageUrl.String(), err)
 		}
